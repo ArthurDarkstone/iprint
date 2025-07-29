@@ -1,12 +1,15 @@
 {
   "name": "@iprint/monorepo",
   "type": "module",
-  "version": "1.0.0",
-  "description": "",
-  "author": "",
-  "license": "ISC",
+  "version": "0.0.0-beta.0",
+  "packageManager": "pnpm@10.13.1",
+  "description": "browser printing library",
+  "author": "Arthur Darkstone<arthurlli@qq.com>",
+  "license": "MIT",
   "keywords": [],
-  "main": "index.js",
+  "engines": {
+    "node": ">=20.18.0"
+  },
   "scripts": {
     "up": "nlx taze",
     "dev": "DEV=true tsdown",
@@ -16,7 +19,7 @@
     "build": "pnpm run --filter=\"./packages/*\" --parallel build && tsdown",
     "docs:dev": "vitepress dev docs",
     "docs:preview": "vitepress preview docs",
-    "docs:build": "vitepress build docs",
+    "docs:build": "vitepress build docs --base /iprint/",
     "publint": "tsx publint.ts"
   },
   "dependencies": {
@@ -38,6 +41,6 @@
     "taze": "catalog:",
     "tsdown": "catalog:",
     "typescript": "catalog:",
-    "vitepress": "^1.6.3"
+    "vitepress": "catalog:"
   }
 }

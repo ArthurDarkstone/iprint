@@ -16,6 +16,7 @@ catalog:
   taze: ^19.1.0
   tsdown: ^0.13.0
   typescript: ^5.8.3
+  vitepress: ^1.6.3
   vue: ^3.5.18
 
 onlyBuiltDependencies:
