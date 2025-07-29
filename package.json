@@ -1,0 +1,39 @@
+{
+  "name": "@print/monorepo",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "main": "index.js",
+  "scripts": {
+    "dev": "DEV=true tsdown",
+    "clean": "node scripts/clean.mjs",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "build": "pnpm run --filter=\"./packages/*\" --parallel build && tsdown",
+    "docs:dev": "pnpm run -C ./docs dev",
+    "docs:preview": "pnpm run -C ./docs preview",
+    "docs:build": "pnpm run -C ./docs build",
+    "publint": "tsx publint.ts"
+  },
+  "dependencies": {
+    "vue": "catalog:"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "catalog:",
+    "@print/core": "workspace:*",
+    "@print/vue": "workspace:*",
+    "@types/node": "catalog:",
+    "esbuild": "catalog:",
+    "eslint": "catalog:",
+    "eslint-factory": "catalog:",
+    "eslint-plugin-format": "catalog:",
+    "eslint-plugin-unimport": "catalog:",
+    "prettier": "catalog:",
+    "rolldown": "catalog:",
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
+  }
+}

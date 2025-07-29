@@ -1,0 +1,24 @@
+{
+  "name": "@print/core",
+  "version": "1.0.0",
+  "description": "核心包",
+  "sideEffects": false,
+  "main": "dist/core.cjs.js",
+  "module": "dist/core.esm.js",
+  "files": [
+    "dist",
+    "index.js"
+  ],
+  "buildOptions": {
+    "name": "PrintCore",
+    "formats": [
+      "esm-bundler",
+      "esm-browser",
+      "cjs",
+      "global"
+    ]
+  },
+  "dependencies": {
+    "@print/shared": "workspace:*"
+  }
+}

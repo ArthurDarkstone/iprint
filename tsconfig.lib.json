@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "incremental": true,
+    "tsBuildInfoFile": "dist/lib.tsbuildinfo",
+    "customConditions": ["dev"],
+    "types": ["node"],
+    "allowJs": false,
+    "declaration": true,
+    "isolatedDeclarations": true
+  },
+  "include": ["packages"],
+  "exclude": [
+    "packages/devtools/src/client",
+    "**/*.config.*",
+    "**/dist",
+    "**/tests"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "@print/shared",
+  "version": "1.0.0",
+  "description": "工具函数",
+  "sideEffects": false,
+  "main": "dist/shared.cjs.js",
+  "module": "dist/shared.esm.js",
+  "files": [
+    "dist",
+    "index.js"
+  ],
+  "buildOptions": {
+    "name": "PrintShared",
+    "formats": [
+      "esm-bundler",
+      "esm-browser",
+      "cjs",
+      "global"
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@print/vue",
+  "version": "1.0.0",
+  "description": "vue包",
+  "sideEffects": false,
+  "main": "dist/vue.cjs.js",
+  "module": "dist/vue.esm.js",
+  "files": [
+    "dist"
+  ],
+  "buildOptions": {
+    "name": "PrintVue",
+    "formats": [
+      "esm-bundler",
+      "esm-browser",
+      "cjs",
+      "global"
+    ]
+  },
+  "dependencies": {
+    "@print/core": "workspace:^"
+  }
+}
