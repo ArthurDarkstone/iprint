@@ -1,3 +1,3 @@
 export * from './renderer'
 
-export * from '@print/shared'
+export * from '@iprint/shared'

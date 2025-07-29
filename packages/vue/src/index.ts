@@ -1,1 +1,1 @@
-export * from '@print/core'
+export * from '@iprint/core'

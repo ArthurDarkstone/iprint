@@ -1,5 +1,5 @@
 {
-  "name": "@print/shared",
+  "name": "@iprint/shared",
   "version": "1.0.0",
   "description": "工具函数",
   "sideEffects": false,

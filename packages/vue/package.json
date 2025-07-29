@@ -1,5 +1,5 @@
 {
-  "name": "@print/vue",
+  "name": "@iprint/vue",
   "version": "1.0.0",
   "description": "vue包",
   "sideEffects": false,
@@ -18,6 +18,6 @@
     ]
   },
   "dependencies": {
-    "@print/core": "workspace:^"
+    "@iprint/core": "workspace:^"
   }
 }

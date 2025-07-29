@@ -1,5 +1,5 @@
 {
-  "name": "@print/core",
+  "name": "@iprint/core",
   "version": "1.0.0",
   "description": "核心包",
   "sideEffects": false,
@@ -19,6 +19,6 @@
     ]
   },
   "dependencies": {
-    "@print/shared": "workspace:*"
+    "@iprint/shared": "workspace:*"
   }
 }
