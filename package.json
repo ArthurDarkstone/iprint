@@ -14,9 +14,9 @@
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "build": "pnpm run --filter=\"./packages/*\" --parallel build && tsdown",
-    "docs:dev": "pnpm run -C ./docs dev",
-    "docs:preview": "pnpm run -C ./docs preview",
-    "docs:build": "pnpm run -C ./docs build",
+    "docs:dev": "vitepress dev docs",
+    "docs:preview": "vitepress preview docs",
+    "docs:build": "vitepress build docs",
     "publint": "tsx publint.ts"
   },
   "dependencies": {
@@ -37,6 +37,7 @@
     "rolldown": "catalog:",
     "taze": "catalog:",
     "tsdown": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitepress": "^1.6.3"
   }
 }
