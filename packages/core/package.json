@@ -1,23 +1,25 @@
 {
   "name": "@iprint/core",
-  "version": "1.0.0",
-  "description": "核心包",
+  "type": "module",
+  "version": "0.0.0-beta.0",
+  "packageManager": "pnpm@10.13.1",
+  "description": "browser printing library",
+  "author": "Arthur Darkstone<arthurlli@qq.com>",
+  "license": "MIT",
+  "keywords": [],
   "sideEffects": false,
-  "main": "dist/core.cjs.js",
-  "module": "dist/core.esm.js",
+  "main": "./index.mjs",
+  "module": "./index.mjs",
+  "types": "./index.d.mts",
   "files": [
-    "dist",
-    "index.js"
+    "*.d.mts",
+    "*.js",
+    "*.mjs"
   ],
-  "buildOptions": {
-    "name": "PrintCore",
-    "formats": [
-      "esm-bundler",
-      "esm-browser",
-      "cjs",
-      "global"
-    ]
+  "engines": {
+    "node": ">=20.18.0"
   },
+  "scripts": {},
   "dependencies": {
     "@iprint/shared": "workspace:*"
   }

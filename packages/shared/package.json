@@ -1,14 +1,24 @@
 {
   "name": "@iprint/shared",
-  "version": "1.0.0",
-  "description": "工具函数",
+  "type": "module",
+  "version": "0.0.0-beta.0",
+  "packageManager": "pnpm@10.13.1",
+  "description": "browser printing library",
+  "author": "Arthur Darkstone<arthurlli@qq.com>",
+  "license": "MIT",
+  "keywords": [],
   "sideEffects": false,
-  "main": "dist/shared.cjs.js",
-  "module": "dist/shared.esm.js",
+  "main": "./index.mjs",
+  "module": "./index.mjs",
+  "types": "./index.d.mts",
   "files": [
-    "dist",
-    "index.js"
+    "*.d.mts",
+    "*.js",
+    "*.mjs"
   ],
+  "engines": {
+    "node": ">=20.18.0"
+  },
   "buildOptions": {
     "name": "PrintShared",
     "formats": [
