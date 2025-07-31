@@ -6,6 +6,5 @@ export default defineConfig({
   platform: 'neutral',
   plugins: [Vue({ isProduction: true })],
   dts: { vue: true },
-  watch: false,
   fromVite: true,
 })
