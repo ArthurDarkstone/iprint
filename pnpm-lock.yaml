@@ -60,6 +60,9 @@ catalogs:
     unplugin-unused:
       specifier: ^0.5.1
       version: 0.5.1
+    unplugin-vue:
+      specifier: ^7.0.0
+      version: 7.0.0
     vite:
       specifier: ^6.0.3
       version: 6.3.5
@@ -125,6 +128,9 @@ importers:
       unplugin-unused:
         specifier: 'catalog:'
         version: 0.5.1
+      unplugin-vue:
+        specifier: 'catalog:'
+        version: 7.0.0(@types/node@22.16.5)(jiti@2.5.1)(vue@3.5.18(typescript@5.8.3))(yaml@2.8.0)
       vitepress:
         specifier: 'catalog:'
         version: 1.6.3(@algolia/client-search@5.34.1)(@types/node@22.16.5)(change-case@5.4.4)(postcss@8.5.6)(search-insights@2.17.3)(typescript@5.8.3)
@@ -2785,6 +2791,12 @@ packages:
     resolution: {integrity: sha512-USnsy4XsInQFcIb/kSt5HbTkwIIYfW1ujGN0jPanq76IvG7RsqHPk4kJqDoZSqCgDkTjolr72a/f7K1Hr2XmWg==}
     engines: {node: '>=20.18.0'}
 
+  unplugin-vue@7.0.0:
+    resolution: {integrity: sha512-dAc5HYa6mz8OGN8+EZw0K666fU8DR+Q6kwM24AoFpqSdkRxBJKRDgfLqc0ZymUnF6BIF4peZlOsODkFgYlSxAw==}
+    engines: {node: '>=20.19.0'}
+    peerDependencies:
+      vue: ^3.2.25
+
   unplugin@1.16.1:
     resolution: {integrity: sha512-4/u/j4FrCKdi17jaxuJA0jClGxB1AvU2hw/IuayPc4ay1XGaJs/rbb4v5WKwAjNifjmXK9PIFyuPiaK8azyR9w==}
     engines: {node: '>=14.0.0'}
@@ -2855,6 +2867,46 @@ packages:
       sass-embedded: '*'
       stylus: '*'
       sugarss: '*'
+      terser: ^5.16.0
+      tsx: ^4.8.1
+      yaml: ^2.4.2
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      jiti:
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      sass-embedded:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+      tsx:
+        optional: true
+      yaml:
+        optional: true
+
+  vite@7.0.6:
+    resolution: {integrity: sha512-MHFiOENNBd+Bd9uvc8GEsIzdkn1JxMmEeYX35tI3fv0sJBUTfW5tQsoaOwuY4KhBI09A3dUJ/DXf2yxPVPUceg==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^20.19.0 || >=22.12.0
+      jiti: '>=1.21.0'
+      less: ^4.0.0
+      lightningcss: ^1.21.0
+      sass: ^1.70.0
+      sass-embedded: ^1.70.0
+      stylus: '>=0.54.8'
+      sugarss: ^5.0.0
       terser: ^5.16.0
       tsx: ^4.8.1
       yaml: ^2.4.2
@@ -5681,6 +5733,27 @@ snapshots:
       pkg-types: 2.2.0
       unplugin: 2.3.5
 
+  unplugin-vue@7.0.0(@types/node@22.16.5)(jiti@2.5.1)(vue@3.5.18(typescript@5.8.3))(yaml@2.8.0):
+    dependencies:
+      '@vue/reactivity': 3.5.18
+      debug: 4.4.1
+      unplugin: 2.3.5
+      vite: 7.0.6(@types/node@22.16.5)(jiti@2.5.1)(yaml@2.8.0)
+      vue: 3.5.18(typescript@5.8.3)
+    transitivePeerDependencies:
+      - '@types/node'
+      - jiti
+      - less
+      - lightningcss
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+      - tsx
+      - yaml
+
   unplugin@1.16.1:
     dependencies:
       acorn: 8.15.0
@@ -5724,6 +5797,20 @@ snapshots:
       fsevents: 2.3.3
 
   vite@6.3.5(@types/node@22.16.5)(jiti@2.5.1)(yaml@2.8.0):
+    dependencies:
+      esbuild: 0.25.8
+      fdir: 6.4.6(picomatch@4.0.3)
+      picomatch: 4.0.3
+      postcss: 8.5.6
+      rollup: 4.46.1
+      tinyglobby: 0.2.14
+    optionalDependencies:
+      '@types/node': 22.16.5
+      fsevents: 2.3.3
+      jiti: 2.5.1
+      yaml: 2.8.0
+
+  vite@7.0.6(@types/node@22.16.5)(jiti@2.5.1)(yaml@2.8.0):
     dependencies:
       esbuild: 0.25.8
       fdir: 6.4.6(picomatch@4.0.3)

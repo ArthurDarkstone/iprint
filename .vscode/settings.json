@@ -17,6 +17,7 @@
     "unplugin",
     "Unref",
     "Unsubscribable",
+    "vite",
     "vitepress",
     "vueuse"
   ],
