@@ -22,9 +22,6 @@
     "docs:build": "vitepress build docs --base /iprint/",
     "publint": "tsx publint.ts"
   },
-  "dependencies": {
-    "vue": "catalog:"
-  },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",
     "@iprint/core": "workspace:*",
@@ -41,6 +38,7 @@
     "taze": "catalog:",
     "tsdown": "catalog:",
     "typescript": "catalog:",
+    "unplugin-unused": "catalog:",
     "vitepress": "catalog:"
   }
 }

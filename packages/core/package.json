@@ -8,9 +8,9 @@
   "license": "MIT",
   "keywords": [],
   "sideEffects": false,
-  "main": "./index.mjs",
-  "module": "./index.mjs",
-  "types": "./index.d.mts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "*.d.mts",
     "*.js",
@@ -22,5 +22,43 @@
   "scripts": {},
   "dependencies": {
     "@iprint/shared": "workspace:*"
+  },
+  "exports": {
+    ".": {
+      "dev": "./src/index.ts",
+      "default": "./dist/index.js"
+    },
+    "./container": {
+      "dev": "./src/container.ts",
+      "default": "./dist/container.js"
+    },
+    "./element": {
+      "dev": "./src/element.ts",
+      "default": "./dist/element.js"
+    },
+    "./movable": {
+      "dev": "./src/movable.ts",
+      "default": "./dist/movable.js"
+    },
+    "./print": {
+      "dev": "./src/print.ts",
+      "default": "./dist/print.js"
+    },
+    "./renderer": {
+      "dev": "./src/renderer.ts",
+      "default": "./dist/renderer.js"
+    },
+    "./*": "./*"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": "./dist/index.js",
+      "./container": "./dist/container.js",
+      "./element": "./dist/element.js",
+      "./movable": "./dist/movable.js",
+      "./print": "./dist/print.js",
+      "./renderer": "./dist/renderer.js",
+      "./*": "./*"
+    }
   }
 }

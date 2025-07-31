@@ -8,9 +8,9 @@
   "license": "MIT",
   "keywords": [],
   "sideEffects": false,
-  "main": "./index.mjs",
-  "module": "./index.mjs",
-  "types": "./index.d.mts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "*.d.mts",
     "*.js",
@@ -27,5 +27,23 @@
       "cjs",
       "global"
     ]
+  },
+  "exports": {
+    ".": {
+      "dev": "./src/index.ts",
+      "default": "./dist/index.js"
+    },
+    "./utils": {
+      "dev": "./src/utils.ts",
+      "default": "./dist/utils.js"
+    },
+    "./*": "./*"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": "./dist/index.js",
+      "./utils": "./dist/utils.js",
+      "./*": "./*"
+    }
   }
 }

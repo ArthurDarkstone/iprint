@@ -18,6 +18,7 @@
     "@iprint/shared": "workspace:*",
     "@tauri-apps/api": "catalog:",
     "@tauri-apps/plugin-opener": "catalog:",
+    "@vueuse/core": "catalog:",
     "vue": "catalog:"
   },
   "devDependencies": {
