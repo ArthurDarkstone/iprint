@@ -18,12 +18,12 @@
     "@iprint/shared": "workspace:*",
     "@tauri-apps/api": "catalog:",
     "@tauri-apps/plugin-opener": "catalog:",
-    "vue": "catalog:conflicts_vue_h3_5_13"
+    "vue": "catalog:"
   },
   "devDependencies": {
     "@tauri-apps/cli": "catalog:",
     "@vitejs/plugin-vue": "catalog:",
-    "typescript": "catalog:conflicts_typescript_t5_6_2",
+    "typescript": "catalog:",
     "vite": "catalog:",
     "vue-tsc": "catalog:"
   }
