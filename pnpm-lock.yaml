@@ -114,6 +114,12 @@ importers:
 
   packages/shared: {}
 
+  packages/tauri:
+    dependencies:
+      '@iprint/shared':
+        specifier: workspace:*
+        version: link:../shared
+
   packages/vue:
     dependencies:
       '@iprint/core':

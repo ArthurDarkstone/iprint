@@ -1,5 +1,5 @@
 {
-  "name": "@iprint/electron",
+  "name": "@iprint/tauri",
   "type": "module",
   "version": "0.0.0-beta.0",
   "packageManager": "pnpm@10.13.1",
