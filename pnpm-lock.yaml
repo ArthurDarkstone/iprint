@@ -143,11 +143,17 @@ importers:
 
   packages/shared: {}
 
-  packages/tauri:
+  packages/vue:
+    dependencies:
+      '@iprint/core':
+        specifier: workspace:^
+        version: link:../core
+
+  tauri:
     dependencies:
       '@iprint/shared':
         specifier: workspace:*
-        version: link:../shared
+        version: link:../packages/shared
       '@tauri-apps/api':
         specifier: 'catalog:'
         version: 2.7.0
@@ -176,12 +182,6 @@ importers:
       vue-tsc:
         specifier: 'catalog:'
         version: 2.2.12(typescript@5.8.3)
-
-  packages/vue:
-    dependencies:
-      '@iprint/core':
-        specifier: workspace:^
-        version: link:../core
 
 packages:
 
