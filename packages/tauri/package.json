@@ -2,25 +2,29 @@
   "name": "@iprint/tauri",
   "type": "module",
   "version": "0.0.0-beta.0",
+  "private": true,
   "packageManager": "pnpm@10.13.1",
   "description": "browser printing library",
   "author": "Arthur Darkstone<arthurlli@qq.com>",
   "license": "MIT",
   "keywords": [],
-  "sideEffects": false,
-  "main": "./index.mjs",
-  "module": "./index.mjs",
-  "types": "./index.d.mts",
-  "files": [
-    "*.d.mts",
-    "*.js",
-    "*.mjs"
-  ],
-  "engines": {
-    "node": ">=20.18.0"
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri"
   },
-  "scripts": {},
   "dependencies": {
-    "@iprint/shared": "workspace:*"
+    "@iprint/shared": "workspace:*",
+    "@tauri-apps/api": "catalog:",
+    "@tauri-apps/plugin-opener": "catalog:",
+    "vue": "catalog:conflicts_vue_h3_5_13"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "catalog:",
+    "@vitejs/plugin-vue": "catalog:",
+    "typescript": "catalog:conflicts_typescript_t5_6_2",
+    "vite": "catalog:",
+    "vue-tsc": "catalog:"
   }
 }
