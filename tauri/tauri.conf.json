@@ -1,0 +1,7 @@
+{
+  "build": {
+    "devUrl": "http://localhost:3000",
+    "beforeDevCommand": "npm run dev"
+  },
+  "identifier": "@iprint/tauri"
+}
