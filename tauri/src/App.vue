@@ -3,9 +3,10 @@ import container from './components/container.vue'
 </script>
 
 <template>
-  <main class="container" />
   <container>
-    232323
+    <div>232323</div>
+
+    <div>232323</div>
   </container>
 </template>
 
