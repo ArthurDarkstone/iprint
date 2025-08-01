@@ -8,21 +8,6 @@
   "license": "MIT",
   "keywords": [],
   "sideEffects": false,
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "*.d.mts",
-    "*.js",
-    "*.mjs"
-  ],
-  "engines": {
-    "node": ">=20.18.0"
-  },
-  "scripts": {},
-  "dependencies": {
-    "@iprint/shared": "workspace:*"
-  },
   "exports": {
     ".": {
       "dev": "./src/index.ts",
@@ -49,6 +34,21 @@
       "default": "./dist/renderer.js"
     },
     "./*": "./*"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "*.d.mts",
+    "*.js",
+    "*.mjs"
+  ],
+  "engines": {
+    "node": ">=20.18.0"
+  },
+  "scripts": {},
+  "dependencies": {
+    "@iprint/shared": "workspace:*"
   },
   "publishConfig": {
     "exports": {

@@ -8,6 +8,17 @@
   "license": "MIT",
   "keywords": [],
   "sideEffects": false,
+  "exports": {
+    ".": {
+      "dev": "./src/index.ts",
+      "default": "./dist/index.js"
+    },
+    "./utils": {
+      "dev": "./src/utils.ts",
+      "default": "./dist/utils.js"
+    },
+    "./*": "./*"
+  },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -27,17 +38,6 @@
       "cjs",
       "global"
     ]
-  },
-  "exports": {
-    ".": {
-      "dev": "./src/index.ts",
-      "default": "./dist/index.js"
-    },
-    "./utils": {
-      "dev": "./src/utils.ts",
-      "default": "./dist/utils.js"
-    },
-    "./*": "./*"
   },
   "publishConfig": {
     "exports": {
