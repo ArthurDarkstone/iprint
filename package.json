@@ -2,7 +2,7 @@
   "name": "@iprint/monorepo",
   "type": "module",
   "version": "0.0.0-beta.0",
-  "packageManager": "pnpm@10.13.1",
+  "packageManager": "pnpm@10.14.0",
   "description": "browser printing library",
   "author": "Arthur Darkstone<arthurlli@qq.com>",
   "license": "MIT",
@@ -12,7 +12,8 @@
   },
   "scripts": {
     "up": "nlx taze",
-    "dev": "DEV=true tsdown",
+    "down": "DEV=true tsdown",
+    "dev": "nr tauri:dev",
     "tauri:dev": "pnpm --filter @iprint/tauri run dev",
     "tauri:app": "pnpm --filter @iprint/tauri run tauri dev",
     "tauri:build": "pnpm --filter @iprint/tauri run tauri build",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",
+    "@antfu/ni": "catalog:",
     "@iprint/core": "workspace:*",
     "@iprint/shared": "workspace:*",
     "@iprint/vue": "workspace:*",
