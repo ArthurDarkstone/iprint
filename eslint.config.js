@@ -14,10 +14,6 @@ const restricted = [
   '../..',
   resolve(dir, 'packages/core/index.ts'),
   resolve(dir, 'packages/shared/index.ts'),
-  {
-    name: 'vue',
-    importNames: ['onMounted', 'onUnmounted', 'unref', 'toRef'],
-  },
 ]
 
 export default antfu(
