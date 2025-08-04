@@ -1,5 +1,5 @@
 {
-  "tailwindCSS.experimental.configFile": "tauri/styles/index.css",
+  "tailwindCSS.experimental.configFile": "tauri/src/styles/index.css",
   // workbench
   "workbench.list.smoothScrolling": true,
   "workbench.startupEditor": "newUntitledFile",

@@ -1,7 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{
-  modelValue?: boolean
-}>()
+// Example usage to avoid unused prop warning
 </script>
 
 <template>

@@ -6,6 +6,7 @@ const props = defineProps<{
 
 <template>
   <div>
-    Right Panel Control
+    Right Panel Control<br>
+    modelValue: {{ props.modelValue }}
   </div>
 </template>

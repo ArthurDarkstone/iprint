@@ -1,7 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{
-  modelValue?: boolean
-}>()
+// Removed unused modelValue prop
 </script>
 
 <template>
