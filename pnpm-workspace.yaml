@@ -6,6 +6,8 @@ packages:
 catalog:
   '@antfu/eslint-config': ^4.19.0
   '@antfu/ni': ^25.0.0
+  '@iconify/json': ^2.2.366
+  '@iconify/tailwind4': ^1.0.6
   '@scena/guides': ^0.29.2
   '@scena/ruler': ^0.20.0
   '@tailwindcss/vite': ^4.1.11

@@ -43,6 +43,7 @@
     "**/.stylelintcache": true,
     "**/.DS_Store": true,
     "**/vite.config.mts.*": true,
+    "**/vite.config.ts.*": true,
     "**/tea.yaml": true
   },
   "files.watcherExclude": {
@@ -103,6 +104,7 @@
     "Demi",
     "esno",
     "Gesto",
+    "iconify",
     "iframes",
     "iife",
     "iprint",
@@ -157,8 +159,8 @@
     "*.env": "$(capture).env.*",
     "README.md": "README*,CHANGELOG*,LICENSE,CNAME",
     "package.json": "pnpm-lock.yaml,pnpm-workspace.yaml,.gitattributes,.gitignore,.gitpod.yml,.npmrc,.browserslistrc,.node-version,.git*,.tazerc.json",
-    "eslint.config.mjs": ".eslintignore,.prettierignore,.stylelintignore,.commitlintrc.*,.prettierrc.*,stylelint.config.*,.lintstagedrc.mjs,cspell.json,lefthook.yml",
-    "tailwind.config.mjs": "postcss.*"
+    "eslint.config.js": ".eslintignore,.prettierignore,.stylelintignore,.commitlintrc.*,.prettierrc.*,stylelint.config.*,.lintstagedrc.mjs,cspell.json,lefthook.yml",
+    "tailwind.config.js": "postcss.*"
   },
 
   "grammarly.userWords": [
@@ -178,7 +180,7 @@
 
   // Disable the default formatter
   "prettier.enable": false,
-  "editor.formatOnSave": false,
+  "editor.formatOnSave": true,
 
   // Auto fix
   "editor.codeActionsOnSave": {
@@ -213,5 +215,6 @@
     "json",
     "jsonc",
     "yaml"
-  ]
+  ],
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint"
 }

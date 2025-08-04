@@ -11,30 +11,32 @@ import {
 </script>
 
 <template>
-  <div class="relative w-full h-full">
+  <div class="relative w-[100vw] h-[100vh] bg-gray-100 dark:bg-gray-900">
     <Toolbar />
 
-    <ResizablePanelGroup direction="horizontal">
-      <ResizablePanel :default-size="20">
-        <Picker />
-      </ResizablePanel>
+    <div class="h-[calc(100vh-3rem)]">
+      <ResizablePanelGroup direction="horizontal">
+        <ResizablePanel :default-size="20">
+          <Picker />
+        </ResizablePanel>
 
-      <ResizableHandle with-handle />
+        <ResizableHandle with-handle />
 
-      <ResizablePanel>
-        <container>
-          <div>232323</div>
+        <ResizablePanel>
+          <container>
+            <div>232323</div>
 
-          <div>232323</div>
-        </container>
-      </ResizablePanel>
+            <div>232323</div>
+          </container>
+        </ResizablePanel>
 
-      <ResizableHandle with-handle />
+        <ResizableHandle with-handle />
 
-      <ResizablePanel :default-size="20">
-        <Control />
-      </ResizablePanel>
-    </ResizablePanelGroup>
+        <ResizablePanel :default-size="20">
+          <Control />
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    </div>
   </div>
 </template>
 
