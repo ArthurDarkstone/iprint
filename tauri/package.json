@@ -16,20 +16,20 @@
   },
   "dependencies": {
     "@iprint/shared": "workspace:*",
-    "@scena/guides": "^0.29.2",
-    "@scena/ruler": "^0.20.0",
+    "@scena/guides": "catalog:",
+    "@scena/ruler": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@tauri-apps/api": "catalog:",
     "@tauri-apps/plugin-opener": "catalog:",
     "@vueuse/core": "catalog:",
-    "infinite-viewer": "^0.29.1",
+    "infinite-viewer": "catalog:",
     "tailwindcss": "catalog:",
     "vue": "catalog:"
   },
   "devDependencies": {
     "@tauri-apps/cli": "catalog:",
     "@vitejs/plugin-vue": "catalog:",
-    "sass": "^1.89.2",
+    "sass": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vue-tsc": "catalog:"
