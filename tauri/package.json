@@ -22,8 +22,14 @@
     "@tauri-apps/api": "catalog:",
     "@tauri-apps/plugin-opener": "catalog:",
     "@vueuse/core": "catalog:",
+    "class-variance-authority": "catalog:",
+    "clsx": "catalog:",
     "infinite-viewer": "catalog:",
+    "lucide-vue-next": "catalog:",
+    "reka-ui": "catalog:",
+    "tailwind-merge": "catalog:",
     "tailwindcss": "catalog:",
+    "tw-animate-css": "catalog:",
     "vue": "catalog:"
   },
   "devDependencies": {

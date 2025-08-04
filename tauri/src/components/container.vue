@@ -1,18 +1,30 @@
 <script setup lang="ts">
 import Guides from '@scena/guides'
 
+import { useResizeObserver } from '@vueuse/core'
+
 import InfiniteViewer from 'infinite-viewer'
 
-import { onMounted, useTemplateRef } from 'vue'
+import { onMounted, shallowRef, useTemplateRef } from 'vue'
 
-// Replace onMounted with the setup lifecycle alternative
+interface TGuides extends Guides {
+  zoom?: number
 
-// const container = useTemplateRef('container')
+  scroll: (pos: number, zoom?: number) => void
+  scrollGuides: (pos: number, zoom?: number) => void
+}
 
 const horizontal = useTemplateRef('horizontal')
 const vertical = useTemplateRef('vertical')
 const container = useTemplateRef('container')
 const viewport = useTemplateRef('viewport')
+
+const wrap = useTemplateRef('wrap')
+
+const horizontalGuides = shallowRef<TGuides>()
+const verticalGuides = shallowRef<TGuides>()
+
+const viewer = shallowRef<InfiniteViewer>()
 
 function handleInit() {
   if (!container) {
@@ -20,25 +32,28 @@ function handleInit() {
     return
   }
 
-  const horizontalGuides = new Guides(horizontal.value!, {
+  horizontalGuides.value = new Guides(horizontal.value!, {
     snapThreshold: 5,
     snaps: [0, 300, 600],
     displayDragPos: true,
     dragPosFormat: v => `${v}px`,
-  }).on('changeGuides', ({ guides }) => {
-    // moveable.horizontalGuidelines = guides
   })
-  const verticalGuides = new Guides(vertical.value!, {
+  // .on('changeGuides', ({ guides }) => {
+  //   moveable.horizontalGuidelines = guides
+  // })
+
+  verticalGuides.value = new Guides(vertical.value!, {
     type: 'vertical',
     snapThreshold: 5,
     snaps: [0, 200, 400],
     displayDragPos: true,
     dragPosFormat: v => `${v}px`,
-  }).on('changeGuides', ({ guides }) => {
-    // moveable.verticalGuidelines = guides
   })
+  // .on('changeGuides', ({ guides }) => {
+  //   moveable.verticalGuidelines = guides
+  // })
 
-  const viewer = new InfiniteViewer(
+  viewer.value = new InfiniteViewer(
     container.value!,
     viewport.value!,
     {
@@ -57,28 +72,30 @@ function handleInit() {
       e.stop()
     }
   }).on('scroll', (e) => {
-    const zoom = viewer.zoom
-    horizontalGuides.scroll(e.scrollLeft, zoom)
-    horizontalGuides.scrollGuides(e.scrollTop, zoom)
+    const zoom = viewer.value?.zoom
+    horizontalGuides.value?.scroll(e.scrollLeft, zoom)
+    horizontalGuides.value?.scrollGuides(e.scrollTop, zoom)
 
-    verticalGuides.scroll(e.scrollTop, zoom)
-    verticalGuides.scrollGuides(e.scrollLeft, zoom)
+    verticalGuides.value?.scroll(e.scrollTop, zoom)
+    verticalGuides.value?.scrollGuides(e.scrollLeft, zoom)
   }).on('pinch', (e) => {
     const zoom = Math.max(0.1, e.zoom)
 
-    verticalGuides.zoom = zoom
-    horizontalGuides.zoom = zoom
+    if (verticalGuides.value && horizontalGuides.value) {
+      verticalGuides.value.zoom = zoom
+      horizontalGuides.value.zoom = zoom
+    }
   })
 
   requestAnimationFrame(() => {
-    viewer.scrollCenter()
-  })
-
-  window.addEventListener('resize', () => {
-    horizontalGuides.resize()
-    verticalGuides.resize()
+    viewer.value?.scrollCenter()
   })
 }
+
+useResizeObserver(wrap, () => {
+  horizontalGuides.value?.resize()
+  verticalGuides.value?.resize()
+})
 
 onMounted(() => {
   handleInit()
@@ -86,13 +103,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="box" />
-  <div ref="horizontal" class="ruler horizontal" />
-  <div ref="vertical" class="ruler vertical" />
+  <div ref="wrap" class="relative w-full h-full">
+    <div class="box" />
+    <div ref="horizontal" class="ruler horizontal" />
+    <div ref="vertical" class="ruler vertical" />
 
-  <div ref="container" class="container">
-    <div ref="viewport" class="viewport">
-      <slot />
+    <div ref="container" class="container">
+      <div ref="viewport" class="viewport">
+        <slot />
+      </div>
     </div>
   </div>
 </template>
