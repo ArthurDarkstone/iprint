@@ -1,5 +1,5 @@
 {
-  "tailwindCSS.experimental.configFile": "internal/tailwind-config/src/index.ts",
+  "tailwindCSS.experimental.configFile": "tauri/src/styles/index.css",
   // workbench
   "workbench.list.smoothScrolling": true,
   "workbench.startupEditor": "newUntitledFile",
@@ -108,6 +108,7 @@
     "iprint",
     "Pausable",
     "publint",
+    "reka",
     "tauri",
     "taze",
     "tsdown",
