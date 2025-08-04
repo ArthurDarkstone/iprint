@@ -16,14 +16,15 @@
   },
   "dependencies": {
     "@iprint/shared": "workspace:*",
+    "@scena/guides": "^0.29.2",
     "@scena/ruler": "^0.20.0",
     "@tailwindcss/vite": "catalog:",
     "@tauri-apps/api": "catalog:",
     "@tauri-apps/plugin-opener": "catalog:",
     "@vueuse/core": "catalog:",
+    "infinite-viewer": "^0.29.1",
     "tailwindcss": "catalog:",
-    "vue": "catalog:",
-    "vue3-infinite-viewer": "^0.17.1"
+    "vue": "catalog:"
   },
   "devDependencies": {
     "@tauri-apps/cli": "catalog:",
