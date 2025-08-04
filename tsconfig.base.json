@@ -6,9 +6,6 @@
     "lib": ["ESNext", "DOM", "DOM.Iterable", "webworker"],
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "paths": {
-      "#macros": ["./macros/index.ts"]
-    },
     "allowJs": true,
     "strict": true,
     "outDir": "temp/dist",

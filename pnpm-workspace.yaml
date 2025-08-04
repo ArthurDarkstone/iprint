@@ -6,33 +6,33 @@ packages:
 catalog:
   '@antfu/eslint-config': ^4.19.0
   '@antfu/ni': ^25.0.0
-  '@daybrush/builder': ^0.1.2
-  '@daybrush/release': ^0.2.4
-  '@daybrush/utils': ^1.13.0
-  '@egjs/agent': ^2.2.1
-  '@scena/event-emitter': ^1.0.5
+  '@scena/guides': ^0.29.2
+  '@scena/ruler': ^0.20.0
   '@tailwindcss/vite': ^4.1.11
   '@tauri-apps/api': ^2
   '@tauri-apps/cli': ^2
   '@tauri-apps/plugin-opener': ^2
   '@types/node': ^22.16.5
   '@vitejs/plugin-vue': ^5.2.1
-  '@vueuse/core': ^13.6.0
-  css-styled: ^1.0.8
+  '@vueuse/core': 13.6.0
+  class-variance-authority: ^0.7.1
+  clsx: ^2.1.1
   esbuild: ^0.24.2
   eslint: ^9.32.0
   eslint-factory: ^0.1.2
   eslint-plugin-format: ^1.0.1
   eslint-plugin-unimport: ^0.1.2
-  framework-utils: ^1.1.0
-  gesto: ^1.19.1
+  infinite-viewer: ^0.29.1
+  lucide-vue-next: ^0.536.0
   prettier: ^3.6.2
-  print-sizes: ^0.2.0
+  reka-ui: ^2.4.1
   rolldown: 1.0.0-beta.29
-  tailwindcss: ^4.1.11
+  sass: ^1.89.2
+  tailwind-merge: ^3.3.1
+  tailwindcss: 4.1.11
   taze: ^19.1.0
   tsdown: ^0.13.0
-  tslib: ^2.4.0
+  tw-animate-css: ^1.3.6
   typescript: ^5.8.3
   unplugin-unused: ^0.5.1
   unplugin-vue: ^7.0.0
@@ -44,6 +44,3 @@ catalog:
 onlyBuiltDependencies:
   - esbuild
   - unrs-resolver
-catalogs:
-  conflicts_typescript_h4_5_0_l4_6_0:
-    typescript: ^4.5.0 <4.6.0

@@ -1,13 +1,9 @@
 <script setup lang="ts">
-import container from './components/container.vue'
+import DefaultLayout from './layouts/default.vue'
 </script>
 
 <template>
-  <container>
-    <div>232323</div>
-
-    <div>232323</div>
-  </container>
+  <DefaultLayout />
 </template>
 
 <style scoped>
