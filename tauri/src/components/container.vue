@@ -6,6 +6,7 @@ import { useResizeObserver } from '@vueuse/core'
 import InfiniteViewer from 'infinite-viewer'
 
 import { onMounted, shallowRef, useTemplateRef } from 'vue'
+import VueMoveable from './moveable.vue'
 
 interface TGuides extends Guides {
   zoom?: number
@@ -78,14 +79,16 @@ function handleInit() {
 
     verticalGuides.value?.scroll(e.scrollTop, zoom)
     verticalGuides.value?.scrollGuides(e.scrollLeft, zoom)
-  }).on('pinch', (e) => {
-    const zoom = Math.max(0.1, e.zoom)
-
-    if (verticalGuides.value && horizontalGuides.value) {
-      verticalGuides.value.zoom = zoom
-      horizontalGuides.value.zoom = zoom
-    }
   })
+
+  // .on('pinch', (e) => {
+  //   const zoom = Math.max(0.1, e.zoom)
+
+  //   if (verticalGuides.value && horizontalGuides.value) {
+  //     verticalGuides.value.zoom = zoom
+  //     horizontalGuides.value.zoom = zoom
+  //   }
+  // })
 
   requestAnimationFrame(() => {
     viewer.value?.scrollCenter()
@@ -110,7 +113,15 @@ onMounted(() => {
 
     <div ref="container" class="container">
       <div ref="viewport" class="viewport">
-        <slot />
+        <!-- <VueMoveable
+          :target="[]"
+          :horizontal-guidelines="horizontalGuides?.value?.guides"
+          :vertical-guidelines="verticalGuides?.value?.guides"
+          :warp-self="true"
+          :keep-ratio="true"
+          :snaps="true"
+          :snap-threshold="5"
+        /> -->
       </div>
     </div>
   </div>
@@ -169,7 +180,7 @@ onMounted(() => {
 
 .viewport {
   width: 400px;
-  /* height: 600px; */
+  height: 600px;
   border: 1px solid #eee;
   box-sizing: border-box;
   text-align: center;

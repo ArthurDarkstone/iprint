@@ -10,7 +10,11 @@
   "keywords": [],
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
+    "app": "tauri dev",
+    "app:build": "tauri build",
+    "build": "nr build:app",
+    "build:vue": "vue-tsc --noEmit && vite build",
+    "build:app": "tauri build",
     "preview": "vite preview",
     "tauri": "tauri"
   },
@@ -26,6 +30,7 @@
     "clsx": "catalog:",
     "infinite-viewer": "catalog:",
     "lucide-vue-next": "catalog:",
+    "moveable": "catalog:",
     "reka-ui": "catalog:",
     "tailwind-merge": "catalog:",
     "tailwindcss": "catalog:",
