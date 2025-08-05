@@ -33,6 +33,8 @@
     "vue": "catalog:"
   },
   "devDependencies": {
+    "@iconify/json": "catalog:",
+    "@iconify/tailwind4": "catalog:",
     "@tauri-apps/cli": "catalog:",
     "@vitejs/plugin-vue": "catalog:",
     "sass": "catalog:",

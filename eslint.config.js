@@ -114,7 +114,7 @@ export default antfu(
   {
     files: [
       'packages/.vitepress/**/*.vue',
-      'playgrounds/**/*.vue',
+      'tauri/**/*.vue',
     ],
     rules: {
       'no-restricted-imports': 'off',
