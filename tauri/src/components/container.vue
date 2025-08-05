@@ -7,6 +7,7 @@ import InfiniteViewer from 'infinite-viewer'
 
 import { onMounted, shallowRef, useTemplateRef } from 'vue'
 import VueMoveable from './moveable.vue'
+import Viewport from './viewport.vue'
 
 interface TGuides extends Guides {
   zoom?: number
@@ -56,7 +57,7 @@ function handleInit() {
 
   viewer.value = new InfiniteViewer(
     container.value!,
-    viewport.value!,
+    viewport.value!.$el,
     {
       // usePinch: true,
       // pinchThreshold: 50,
@@ -79,16 +80,14 @@ function handleInit() {
 
     verticalGuides.value?.scroll(e.scrollTop, zoom)
     verticalGuides.value?.scrollGuides(e.scrollLeft, zoom)
+  }).on('pinch', (e) => {
+    const zoom = Math.max(0.1, e.zoom)
+
+    if (verticalGuides.value && horizontalGuides.value) {
+      verticalGuides.value.zoom = zoom
+      horizontalGuides.value.zoom = zoom
+    }
   })
-
-  // .on('pinch', (e) => {
-  //   const zoom = Math.max(0.1, e.zoom)
-
-  //   if (verticalGuides.value && horizontalGuides.value) {
-  //     verticalGuides.value.zoom = zoom
-  //     horizontalGuides.value.zoom = zoom
-  //   }
-  // })
 
   requestAnimationFrame(() => {
     viewer.value?.scrollCenter()
@@ -112,17 +111,17 @@ onMounted(() => {
     <div ref="vertical" class="ruler vertical" />
 
     <div ref="container" class="container">
-      <div ref="viewport" class="viewport">
-        <!-- <VueMoveable
+      <Viewport ref="viewport" class="viewport">
+        <VueMoveable
           :target="[]"
-          :horizontal-guidelines="horizontalGuides?.value?.guides"
-          :vertical-guidelines="verticalGuides?.value?.guides"
+          :horizontal-guidelines="horizontalGuides?.getGuides()"
+          :vertical-guidelines="verticalGuides?.getGuides()"
           :warp-self="true"
           :keep-ratio="true"
           :snaps="true"
           :snap-threshold="5"
-        /> -->
-      </div>
+        />
+      </Viewport>
     </div>
   </div>
 </template>

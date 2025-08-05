@@ -1,8 +1,9 @@
+import type { ElementType } from './elements'
 // store.ts
 import { createGlobalState } from '@vueuse/core'
 import { computed, ref } from 'vue'
 
-export type Picker = 'text' | 'image' | 'rect' | 'circle' | 'barcode' | 'qrcode'
+export type Picker = ElementType
 
 export const usePicker = createGlobalState(
   () => {
