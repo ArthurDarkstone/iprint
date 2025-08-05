@@ -13,17 +13,21 @@ import VanillaMoveable, {
 } from 'moveable'
 import { defineComponent } from 'vue'
 
+interface ComponentInstance {
+  $_moveable: VanillaMoveable
+}
+
 const methods: Record<string, any> = {}
 
 METHODS.forEach((name) => {
-  methods[name] = function (this: any, ...args: any[]) {
+  methods[name] = function (this: ComponentInstance, ...args: any[]) {
     return this.$_moveable[name](...args)
   }
 })
 const watch: Record<string, any> = {}
 
 PROPERTIES.forEach((name) => {
-  watch[name] = function (this: any, value: any) {
+  watch[name] = function (this: ComponentInstance, value: any) {
     this.$_moveable[name] = value
   }
 })
@@ -66,7 +70,7 @@ const VueMoveable = defineComponent<
           })
           this.$_moveable = moveable
         },
-        beforeUnmount(this: any) {
+        beforeUnmount(this: ComponentInstance) {
           this.$_moveable.destroy()
         },
         methods,

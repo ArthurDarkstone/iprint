@@ -30,7 +30,7 @@ const items: Array<{ key: Picker, title: string, icon: string }> = [
   {
     key: 'barcode',
     title: 'Barcode',
-    icon: 'icon-[carbon--circle-dash]',
+    icon: 'icon-[ic--baseline-qrcode]',
   },
 
   {
