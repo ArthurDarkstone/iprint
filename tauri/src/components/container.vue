@@ -5,7 +5,7 @@ import { useResizeObserver } from '@vueuse/core'
 
 import InfiniteViewer from 'infinite-viewer'
 
-import { onMounted, shallowRef, useTemplateRef } from 'vue'
+import { onMounted, ref, shallowRef, useTemplateRef } from 'vue'
 import VueMoveable from './moveable.vue'
 import Viewport from './viewport.vue'
 
@@ -59,9 +59,9 @@ function handleInit() {
     container.value!,
     viewport.value!.$el,
     {
-      // usePinch: true,
+      // usePinch: false,
       // pinchThreshold: 50,
-      useMouseDrag: true,
+      useMouseDrag: false,
       useWheelScroll: true,
       useAutoZoom: true,
       zoomRange: [0.1, 10],
@@ -80,14 +80,16 @@ function handleInit() {
 
     verticalGuides.value?.scroll(e.scrollTop, zoom)
     verticalGuides.value?.scrollGuides(e.scrollLeft, zoom)
-  }).on('pinch', (e) => {
-    const zoom = Math.max(0.1, e.zoom)
-
-    if (verticalGuides.value && horizontalGuides.value) {
-      verticalGuides.value.zoom = zoom
-      horizontalGuides.value.zoom = zoom
-    }
   })
+
+  // .on('pinch', (e) => {
+  //   const zoom = Math.max(0.1, e.zoom)
+
+  //   if (verticalGuides.value && horizontalGuides.value) {
+  //     verticalGuides.value.zoom = zoom
+  //     horizontalGuides.value.zoom = zoom
+  //   }
+  // })
 
   requestAnimationFrame(() => {
     viewer.value?.scrollCenter()
@@ -102,6 +104,27 @@ useResizeObserver(wrap, () => {
 onMounted(() => {
   handleInit()
 })
+
+const draggable = true
+const throttleDrag = 1
+const edgeDraggable = false
+const startDragRotate = 0
+const throttleDragRotate = 0
+const targetRef = ref(null)
+
+function onDrag(e) {
+  e.target.style.transform = e.transform
+}
+
+function onResize(e) {
+  e.target.style.width = `${e.width}px`
+  e.target.style.height = `${e.height}px`
+  e.target.style.transform = e.drag.transform
+}
+
+const renderDirections = ['nw', 'n', 'ne', 'w', 'e', 'sw', 's', 'se']
+
+const throttleResize = 1
 </script>
 
 <template>
@@ -112,14 +135,28 @@ onMounted(() => {
 
     <div ref="container" class="container">
       <Viewport ref="viewport" class="viewport">
+        <div
+          ref="targetRef"
+          class="target"
+        >
+          232323
+          232323
+        </div>
+
         <VueMoveable
-          :target="[]"
-          :horizontal-guidelines="horizontalGuides?.getGuides()"
-          :vertical-guidelines="verticalGuides?.getGuides()"
-          :warp-self="true"
-          :keep-ratio="true"
-          :snaps="true"
-          :snap-threshold="5"
+          :target="targetRef"
+          :draggable="draggable"
+          :resizable="true"
+          keep-ratio
+          :throttle-drag="throttleDrag"
+          :edge-draggable="edgeDraggable"
+          :start-drag-rotate="startDragRotate"
+          :throttle-drag-rotate="throttleDragRotate"
+          :throttle-resize="throttleResize"
+
+          :render-directions="renderDirections"
+          @drag="onDrag"
+          @resize="onResize"
         />
       </Viewport>
     </div>
@@ -183,5 +220,20 @@ onMounted(() => {
   border: 1px solid #eee;
   box-sizing: border-box;
   text-align: center;
+}
+
+.target {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  top: 150px;
+  left: 100px;
+  line-height: 100px;
+  text-align: center;
+  background: #ee8;
+  color: #333;
+  font-weight: bold;
+  border: 1px solid #333;
+  box-sizing: border-box;
 }
 </style>

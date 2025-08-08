@@ -14,7 +14,7 @@
   "scripts": {
     "up": "nlx taze",
     "down": "DEV=true tsdown",
-    "dev": "nr tauri:dev",
+    "dev": "nr down & nr tauri:dev",
     "tauri:dev": "pnpm --filter @iprint/tauri run dev",
     "tauri:app": "pnpm --filter @iprint/tauri run app",
     "tauri:build": "pnpm --filter @iprint/tauri run tauri build",
