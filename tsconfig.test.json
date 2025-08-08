@@ -17,8 +17,6 @@
   ],
   "exclude": [
     "**/dist",
-    "**/tests/fixtures",
-    "packages/volar/src",
-    "packages/nuxt"
+    "**/tests/fixtures"
   ]
 }
