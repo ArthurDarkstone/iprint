@@ -34,10 +34,10 @@
   --color-chart-3: hsl(var(--chart-3));
   --color-chart-4: hsl(var(--chart-4));
   --color-chart-5: hsl(var(--chart-5));
-  --radius-sm: calc(hsl(var(--radius) - 4px));
-  --radius-md: calc(hsl(var(--radius) - 2px));
+  --radius-sm: hsl(calc(var(--radius) - 4px));
+  --radius-md: hsl(calc(var(--radius) - 2px));
   --radius-lg: hsl(var(--radius));
-  --radius-xl: calc(hsl(var(--radius) + 4px));
+  --radius-xl: hsl(calc(var(--radius) + 4px));
   --color-sidebar: hsl(var(--sidebar));
   --color-sidebar-foreground: hsl(var(--sidebar-foreground));
   --color-sidebar-primary: hsl(var(--sidebar-primary));
