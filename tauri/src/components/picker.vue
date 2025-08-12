@@ -42,7 +42,7 @@ const items: Array<{ key: Picker, title: string, icon: string }> = [
 </script>
 
 <template>
-  <div class="bg-background border-r">
+  <div class="bg-background border-r w-full h-full overflow-y-scroll">
     <div>
       <div class="text-lg font-semibold text-gray-700 pt-4 px-6">
         Basic Picker

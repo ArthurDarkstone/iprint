@@ -5,7 +5,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div>
+  <div class="bg-background w-full h-full">
     Right Panel Control<br>
     modelValue: {{ props.modelValue }}
   </div>
