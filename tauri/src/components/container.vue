@@ -4,9 +4,9 @@ import Guides from '@scena/guides'
 import { useResizeObserver } from '@vueuse/core'
 
 import InfiniteViewer from 'infinite-viewer'
-
 import { onMounted, ref, shallowRef, useTemplateRef } from 'vue'
 import VueMoveable from './moveable.vue'
+
 import Viewport from './viewport.vue'
 
 interface TGuides extends Guides {
@@ -112,11 +112,11 @@ const startDragRotate = 0
 const throttleDragRotate = 0
 const targetRef = ref(null)
 
-function onDrag(e) {
+function onDrag(e: any) {
   e.target.style.transform = e.transform
 }
 
-function onResize(e) {
+function onResize(e: any) {
   e.target.style.width = `${e.width}px`
   e.target.style.height = `${e.height}px`
   e.target.style.transform = e.drag.transform
@@ -134,7 +134,7 @@ const throttleResize = 1
     <div ref="vertical" class="ruler vertical" />
 
     <div ref="container" class="container">
-      <Viewport ref="viewport" class="viewport">
+      <Viewport id="viewport" ref="viewport" class="viewport">
         <div
           ref="targetRef"
           class="target"
