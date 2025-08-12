@@ -11,7 +11,7 @@ import {
 </script>
 
 <template>
-  <div class="relative w-[100vw] h-[100vh] bg-gray-100 dark:bg-gray-900">
+  <div class="relative w-[100vw] h-[100vh]">
     <Toolbar />
 
     <div class="h-[calc(100vh-3rem)]">

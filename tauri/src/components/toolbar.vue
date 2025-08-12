@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useDark, useToggle } from '@vueuse/core'
+
 import { useStatus } from '@/store/status'
 
 const { currentStatus, setStatus } = useStatus()
@@ -24,10 +26,16 @@ const tools = [
 function handleGithub() {
   window.open('https://github.com/ArthurDarkstone/iprint', '_blank')
 }
+
+const isDark = useDark()
+
+isDark.value = true
+
+// const toggleDark = useToggle(isDark)
 </script>
 
 <template>
-  <div class="w-full h-12 bg-gray-800  text-white  flex items-center  select-none justify-between ">
+  <div class="w-full h-12 bg-background border-b text-white  flex items-center  select-none justify-between ">
     <div class="flex items-center ml-4">
       <div v-for="tool in tools" :key="tool.name" class="cursor-pointer mr-4" @click="tool.action">
         <span :class="`${tool.icon} ${currentStatus === tool.name ? 'text-blue-500' : 'text-white'}`" />
@@ -39,6 +47,9 @@ function handleGithub() {
     </div>
 
     <div class="mr-4">
+      <!-- theme -->
+      <!-- <span class="icon-[mdi--theme-light-dark] text-xxl cursor-pointer" @click="() => toggleDark()" /> -->
+
       <!-- github -->
       <span class="icon-[mdi--github] text-xxl cursor-pointer" @click="handleGithub" />
     </div>
