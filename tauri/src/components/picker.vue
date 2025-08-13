@@ -42,7 +42,7 @@ const items: Array<{ key: Picker, title: string, icon: string }> = [
 </script>
 
 <template>
-  <div class="bg-background border-r w-full h-full overflow-y-scroll">
+  <div class="bg-background border-r w-full h-full">
     <div>
       <div class="text-lg font-semibold text-gray-700 pt-4 px-6">
         Basic Picker
@@ -53,9 +53,9 @@ const items: Array<{ key: Picker, title: string, icon: string }> = [
       <div
         v-for="item in items"
         :key="item.key"
-        class=" w-32 h-32 flex flex-col  justify-center items-center m-2 p-2 border border-gray-300 rounded cursor-pointer hover:bg-gray-100"
+        class=" w-32 h-32 flex flex-col  justify-center items-center m-2 p-2 border border-gray-300 rounded cursor-pointer hover:bg-accent"
         :class="{
-          'bg-gray-200': currentPicker === item.key,
+          'bg-primary': currentPicker === item.key,
         }"
         @click="setPicker(item.key)"
       >

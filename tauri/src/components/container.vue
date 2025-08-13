@@ -4,9 +4,12 @@ import Guides from '@scena/guides'
 import { useResizeObserver } from '@vueuse/core'
 
 import InfiniteViewer from 'infinite-viewer'
-import { onMounted, ref, shallowRef, useTemplateRef } from 'vue'
-import VueMoveable from './moveable.vue'
+import { getElementInfo } from 'moveable'
+import { computed, onMounted, provide, ref, shallowRef, useTemplateRef, watch } from 'vue'
 
+import { useViewport } from '@/store/viewport'
+import VueMoveable from './moveable.vue'
+import VueSelecto from './selecto.vue'
 import Viewport from './viewport.vue'
 
 interface TGuides extends Guides {
@@ -23,10 +26,27 @@ const viewport = useTemplateRef('viewport')
 
 const wrap = useTemplateRef('wrap')
 
+const { width, height, currentSize } = useViewport()
+
 const horizontalGuides = shallowRef<TGuides>()
 const verticalGuides = shallowRef<TGuides>()
 
 const viewer = shallowRef<InfiniteViewer>()
+
+const horizonRange = ref<[[number, number]]>([[0, width.value]])
+const verticalRange = ref<[[number, number]]>([[0, height.value]])
+
+watch(currentSize, () => {
+  const rect = getElementInfo(viewport.value!.$el)
+
+  horizonRange.value = [[rect.left, rect.right]]
+  verticalRange.value = [[rect.top, rect.bottom]]
+
+  console.log('handleCHangesize')
+
+  horizontalGuides.value?.forceUpdate()
+  verticalGuides.value?.forceUpdate()
+})
 
 function handleInit() {
   if (!container) {
@@ -39,6 +59,8 @@ function handleInit() {
     snaps: [0, 300, 600],
     displayDragPos: true,
     dragPosFormat: v => `${v}px`,
+    selectedRangesText: true,
+    selectedRanges: horizonRange.value,
   })
   // .on('changeGuides', ({ guides }) => {
   //   moveable.horizontalGuidelines = guides
@@ -50,6 +72,7 @@ function handleInit() {
     snaps: [0, 200, 400],
     displayDragPos: true,
     dragPosFormat: v => `${v}px`,
+    selectedRanges: verticalRange.value,
   })
   // .on('changeGuides', ({ guides }) => {
   //   moveable.verticalGuidelines = guides
@@ -125,6 +148,10 @@ function onResize(e: any) {
 const renderDirections = ['nw', 'n', 'ne', 'w', 'e', 'sw', 's', 'se']
 
 const throttleResize = 1
+
+const selecto = useTemplateRef('selecto')
+
+provide('selecto', selecto)
 </script>
 
 <template>
@@ -133,8 +160,8 @@ const throttleResize = 1
     <div ref="horizontal" class="ruler horizontal" />
     <div ref="vertical" class="ruler vertical" />
 
-    <div ref="container" class="container">
-      <Viewport id="viewport" ref="viewport" class="viewport">
+    <div ref="container" class="container bg-background-deep">
+      <Viewport id="viewport" ref="viewport" class="viewport bg-white text-black" :style="{ width: `${width}px`, height: `${height}px` }">
         <div
           ref="targetRef"
           class="target"
@@ -160,6 +187,33 @@ const throttleResize = 1
         />
       </Viewport>
     </div>
+
+    <VueSelecto
+      ref="selecto"
+      :get-element-rect="getElementInfo"
+      drag-container=".container"
+      :hit-rate="0"
+      :selectable-targets="[targetRef!]"
+      select-by-click
+      :select-from-inside="false"
+      :toggle-continue-select="['shift']"
+      prevent-default
+      :scroll-options="{
+        container: () => viewer?.getContainer()!,
+        threshold: 30,
+        throttleTime: 30,
+        getScrollPosition: () => {
+          return [
+            viewer?.getScrollLeft({ absolute: true })!,
+            viewer?.getScrollTop({ absolute: true })!,
+          ]
+        },
+      }"
+
+      @scroll="({ direction }: { direction: number[] }) => {
+        viewer?.scrollBy(direction[0] * 10, direction[1] * 10);
+      }"
+    />
   </div>
 </template>
 
@@ -215,8 +269,6 @@ const throttleResize = 1
 }
 
 .viewport {
-  width: 400px;
-  height: 600px;
   border: 1px solid #eee;
   box-sizing: border-box;
   text-align: center;

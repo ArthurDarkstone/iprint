@@ -3,6 +3,7 @@ import { print } from '@iprint/core'
 import { useDark } from '@vueuse/core'
 
 import { useStatus } from '@/store/status'
+import { useViewport } from '@/store/viewport'
 
 const { currentStatus, setStatus } = useStatus()
 
@@ -48,6 +49,8 @@ const isDark = useDark()
 
 isDark.value = true
 
+const { width, height } = useViewport()
+
 // const toggleDark (isDark)
 </script>
 
@@ -57,6 +60,11 @@ isDark.value = true
       <div v-for="tool in tools" :key="tool.name" class="cursor-pointer mr-4" @click="tool.action">
         <span :class="`${tool.icon} ${currentStatus === tool.name ? 'text-blue-500' : 'text-white'}`" />
       </div>
+
+      <!-- <div>
+        <input v-model="width" type="number">
+        <input v-model="height" type="number">
+      </div> -->
     </div>
 
     <div class=" w-20 text-center ">
