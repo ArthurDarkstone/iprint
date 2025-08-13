@@ -27,7 +27,10 @@ function cloneWithFormValues(elmToClone: HTMLElement) {
   canvases.forEach((canvas, i) => {
     const ctx = canvas.getContext('2d')
     if (ctx) {
-      resultCanvases[i].getContext('2d')!.drawImage(canvas, 0, 0)
+      const resultCtx = resultCanvases[i].getContext('2d')
+      if (resultCtx) {
+        resultCtx.drawImage(canvas, 0, 0)
+      }
       resultCanvases[i].setAttribute('data-print', canvas.toDataURL())
     }
   })
@@ -36,7 +39,12 @@ function cloneWithFormValues(elmToClone: HTMLElement) {
 
 function getDomFromString(str: string) {
   const container = document.createElement('span')
-  container.innerHTML = str || ''
+  // container.innerHTML = str || ''
+
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(str || '', 'text/html')
+  container.append(...doc.body.childNodes)
+
   return container
 }
 
@@ -63,9 +71,17 @@ function printFrame(frameWindow: HTMLIFrameElement | Window | Document, content:
           const ctx = canvas[i].getContext('2d')
           const image = new Image()
           image.onload = function () {
-            ctx!.drawImage(image, 0, 0)
+            // ctx!.drawImage(image, 0, 0)
+
+            if (ctx) {
+              ctx.drawImage(image, 0, 0)
+            }
           }
-          image.src = canvas[i].getAttribute('data-print')!
+          // image.src = canvas[i].getAttribute('data-print')!
+          const dataUrl = canvas[i].getAttribute('data-print')
+          if (dataUrl) {
+            image.src = dataUrl
+          }
         }
       }
       catch (err) {
@@ -114,6 +130,7 @@ function printContentInIFrame(content: string, options: PrintOptions) {
     document.body.prepend(iframe)
     iframeCreated = true
   }
+
   return printFrame(iframe, content, options)
     .then(() => {
       setTimeout(() => {
@@ -138,15 +155,11 @@ function printContentInIFrame(content: string, options: PrintOptions) {
 
 function printContentInNewWindow(content: string, options: PrintOptions) {
   const frameWindow = window.open()
-  return printFrame(frameWindow!, content, options)
-    .finally(() => {
-      try {
-        options.deferred && options.deferred.resolve && options.deferred.resolve()
-      }
-      catch (err) {
-        console.warn('Error notifying deferred', err)
-      }
-    })
+  if (!frameWindow) {
+    console.error('Failed to open print window. Please check popup blocker settings.')
+    return Promise.reject(new Error('Failed to open print window'))
+  }
+  return printFrame(frameWindow, content, options)
 }
 
 function isNode(o: any): o is Node {
@@ -166,6 +179,7 @@ export interface PrintOptions {
   timeout?: number
   title?: string
   doctype?: string
+  style: string
 }
 
 export function print(elementOrSelector: string | HTMLElement | Node, userOptions: Partial<PrintOptions> = {}): any {
@@ -195,6 +209,7 @@ export function print(elementOrSelector: string | HTMLElement | Node, userOption
     timeout: 750,
     title: null,
     doctype: '<!doctype html>',
+    style: '',
   }
   const options = Object.assign({}, defaults, userOptions) as PrintOptions
   // 处理样式
@@ -214,6 +229,13 @@ export function print(elementOrSelector: string | HTMLElement | Node, userOption
       styles.push(link)
     })
   }
+
+  if (options.style) {
+    const style = document.createElement('style')
+    style.textContent = options.style
+    styles.push(style)
+  }
+
   // 克隆要打印的内容
   const copy = cloneWithFormValues(element as HTMLElement)
   // 包裹一层 span
@@ -236,12 +258,23 @@ export function print(elementOrSelector: string | HTMLElement | Node, userOption
   }
   // 追加内容
   if (options.append) {
-    wrapper.appendChild(getDomFromString(options.append as string) as HTMLElement)
+    if (typeof options.append === 'string') {
+      wrapper.appendChild(getDomFromString(options.append) as HTMLElement)
+    }
+    else {
+      wrapper.appendChild(options.append.cloneNode(true) as HTMLElement)
+    }
   }
   // 前置内容
   if (options.prepend) {
-    wrapper.insertBefore(getDomFromString(options.prepend as string) as HTMLElement, wrapper.firstChild)
+    if (typeof options.prepend === 'string') {
+      wrapper.insertBefore(getDomFromString(options.prepend) as HTMLElement, wrapper.firstChild)
+    }
+    else {
+      wrapper.insertBefore(options.prepend.cloneNode(true) as HTMLElement, wrapper.firstChild)
+    }
   }
+
   // 手动复制表单值
   if (options.manuallyCopyFormValues) {
     wrapper.querySelectorAll('input').forEach((field) => {

@@ -28,8 +28,21 @@ function handleGithub() {
   window.open('https://github.com/ArthurDarkstone/iprint', '_blank')
 }
 
-function handlePrint() {
-  print('#viewport')
+async function handlePrint() {
+  try {
+    await Promise.resolve(print('#viewport', {
+      style: `
+        #viewport {
+          transform: none !important;
+          border: none !important;
+        }
+      `,
+    }))
+  }
+  catch (err) {
+    console.error('Print failed:', err)
+    // Optionally surface a UI toast here.
+  }
 }
 const isDark = useDark()
 
@@ -57,7 +70,7 @@ isDark.value = true
       <!-- github -->
 
       <button
-        class="absolute top-2 right-2 z-10 px-2 py-1 bg-blue-500 text-white rounded"
+        class="absolute top-2 right-2 z-10 px-2 py-1 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-300"
         @click="handlePrint"
       >
         Print
