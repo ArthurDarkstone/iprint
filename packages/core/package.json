@@ -21,17 +21,9 @@
       "dev": "./src/element.ts",
       "default": "./dist/element.js"
     },
-    "./movable": {
-      "dev": "./src/movable.ts",
-      "default": "./dist/movable.js"
-    },
     "./print": {
       "dev": "./src/print.ts",
       "default": "./dist/print.js"
-    },
-    "./renderer": {
-      "dev": "./src/renderer.ts",
-      "default": "./dist/renderer.js"
     },
     "./*": "./*"
   },
@@ -55,9 +47,7 @@
       ".": "./dist/index.js",
       "./container": "./dist/container.js",
       "./element": "./dist/element.js",
-      "./movable": "./dist/movable.js",
       "./print": "./dist/print.js",
-      "./renderer": "./dist/renderer.js",
       "./*": "./*"
     }
   }

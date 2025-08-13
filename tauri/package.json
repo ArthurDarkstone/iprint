@@ -19,6 +19,7 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@iprint/core": "workspace:*",
     "@iprint/shared": "workspace:*",
     "@scena/guides": "catalog:",
     "@scena/ruler": "catalog:",

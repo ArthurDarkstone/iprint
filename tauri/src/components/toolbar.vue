@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { useDark, useToggle } from '@vueuse/core'
+import { print } from '@iprint/core'
+import { useDark } from '@vueuse/core'
 
 import { useStatus } from '@/store/status'
 
@@ -27,11 +28,27 @@ function handleGithub() {
   window.open('https://github.com/ArthurDarkstone/iprint', '_blank')
 }
 
+async function handlePrint() {
+  try {
+    await Promise.resolve(print('#viewport', {
+      style: `
+        #viewport {
+          transform: none !important;
+          border: none !important;
+        }
+      `,
+    }))
+  }
+  catch (err) {
+    console.error('Print failed:', err)
+    // Optionally surface a UI toast here.
+  }
+}
 const isDark = useDark()
 
 isDark.value = true
 
-// const toggleDark = useToggle(isDark)
+// const toggleDark (isDark)
 </script>
 
 <template>
@@ -51,6 +68,14 @@ isDark.value = true
       <!-- <span class="icon-[mdi--theme-light-dark] text-xxl cursor-pointer" @click="() => toggleDark()" /> -->
 
       <!-- github -->
+
+      <button
+        class="absolute top-2 right-2 z-10 px-2 py-1 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-300"
+        @click="handlePrint"
+      >
+        Print
+      </button>
+
       <span class="icon-[mdi--github] text-xxl cursor-pointer" @click="handleGithub" />
     </div>
   </div>
