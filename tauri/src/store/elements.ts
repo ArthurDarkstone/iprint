@@ -16,8 +16,8 @@ export interface Element {
   id: string
   type: ElementType
   style: Record<string, any>
-  width: number
-  height: number
+  w: number
+  h: number
   x: number
   y: number
 }
@@ -46,8 +46,8 @@ export function createElement(type: ElementType, props: Partial<Element>): Eleme
     id: generateId(),
     type,
     style: {},
-    width: 100,
-    height: 100,
+    w: 100,
+    h: 100,
     x: 0,
     y: 0,
     ...props,
@@ -78,7 +78,7 @@ export type Elements = Element[]
 export const useElements = createGlobalState(
   () => {
     // state
-    const _elements = shallowRef<Elements>([])
+    const _elements = ref<Elements>([])
 
     // getters
     const elements = computed(() => _elements.value)
@@ -90,6 +90,8 @@ export const useElements = createGlobalState(
 
     function addElement(newElement: Element) {
       if (!isElement(newElement)) {
+        console.warn('Invalid element:', newElement)
+
         return
       }
 

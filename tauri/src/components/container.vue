@@ -7,6 +7,8 @@ import InfiniteViewer from 'infinite-viewer'
 import { getElementInfo } from 'moveable'
 import { computed, onMounted, provide, ref, shallowRef, useTemplateRef, watch } from 'vue'
 
+import { createElement, useElements } from '@/store/elements'
+import { usePicker } from '@/store/picker'
 import { useViewport } from '@/store/viewport'
 import VueMoveable from './moveable.vue'
 import VueSelecto from './selecto.vue'
@@ -152,6 +154,30 @@ const throttleResize = 1
 const selecto = useTemplateRef('selecto')
 
 provide('selecto', selecto)
+
+function handleDrag(e: any) {
+  console.log(e)
+}
+
+const { addElement, elements } = useElements()
+const { currentPicker } = usePicker()
+
+provide('elements', elements)
+
+function handleDragEnd(e: any) {
+  console.log('Drag ended:', e.rect)
+
+  const newElement = createElement(currentPicker.value, {
+    x: e.rect.left,
+    y: e.rect.top,
+    w: e.rect.width,
+    h: e.rect.height,
+  })
+
+  addElement(newElement)
+
+  console.log('Element added:', elements.value)
+}
 </script>
 
 <template>
@@ -160,7 +186,23 @@ provide('selecto', selecto)
     <div ref="horizontal" class="ruler horizontal" />
     <div ref="vertical" class="ruler vertical" />
 
-    <div ref="container" class="container bg-background-deep">
+    <div ref="container" class="container relative bg-background-deep">
+      <VueMoveable
+        :target="targetRef"
+        :draggable="draggable"
+        :resizable="true"
+        keep-ratio
+        :throttle-drag="throttleDrag"
+        :edge-draggable="edgeDraggable"
+        :start-drag-rotate="startDragRotate"
+        :throttle-drag-rotate="throttleDragRotate"
+        :throttle-resize="throttleResize"
+
+        :render-directions="renderDirections"
+        @drag="onDrag"
+        @resize="onResize"
+      />
+
       <Viewport id="viewport" ref="viewport" class="viewport bg-white text-black" :style="{ width: `${width}px`, height: `${height}px` }">
         <div
           ref="targetRef"
@@ -169,33 +211,17 @@ provide('selecto', selecto)
           232323
           232323
         </div>
-
-        <VueMoveable
-          :target="targetRef"
-          :draggable="draggable"
-          :resizable="true"
-          keep-ratio
-          :throttle-drag="throttleDrag"
-          :edge-draggable="edgeDraggable"
-          :start-drag-rotate="startDragRotate"
-          :throttle-drag-rotate="throttleDragRotate"
-          :throttle-resize="throttleResize"
-
-          :render-directions="renderDirections"
-          @drag="onDrag"
-          @resize="onResize"
-        />
       </Viewport>
     </div>
 
     <VueSelecto
       ref="selecto"
       :get-element-rect="getElementInfo"
-      drag-container=".container"
+      drag-container="#viewport"
       :hit-rate="0"
       :selectable-targets="[targetRef!]"
       select-by-click
-      :select-from-inside="false"
+      :select-from-inside="true"
       :toggle-continue-select="['shift']"
       prevent-default
       :scroll-options="{
@@ -203,6 +229,9 @@ provide('selecto', selecto)
         threshold: 30,
         throttleTime: 30,
         getScrollPosition: () => {
+          console.log(viewer?.getScrollLeft({ absolute: true })!)
+          console.log(viewer?.getScrollTop({ absolute: true })!)
+
           return [
             viewer?.getScrollLeft({ absolute: true })!,
             viewer?.getScrollTop({ absolute: true })!,
@@ -213,6 +242,8 @@ provide('selecto', selecto)
       @scroll="({ direction }: { direction: number[] }) => {
         viewer?.scrollBy(direction[0] * 10, direction[1] * 10);
       }"
+
+      @drag-end="handleDragEnd"
     />
   </div>
 </template>
