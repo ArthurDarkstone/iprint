@@ -203,15 +203,7 @@ function handleDragEnd(e: any) {
         @resize="onResize"
       />
 
-      <Viewport id="viewport" ref="viewport" class="viewport bg-white text-black" :style="{ width: `${width}px`, height: `${height}px` }">
-        <div
-          ref="targetRef"
-          class="target"
-        >
-          232323
-          232323
-        </div>
-      </Viewport>
+      <Viewport id="viewport" ref="viewport" class="viewport bg-white text-black" :style="{ width: `${width}px`, height: `${height}px` }" />
     </div>
 
     <VueSelecto
