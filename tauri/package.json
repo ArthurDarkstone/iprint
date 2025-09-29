@@ -35,6 +35,7 @@
     "reka-ui": "catalog:",
     "tailwind-merge": "catalog:",
     "tailwindcss": "catalog:",
+    "tauri-plugin-printer-v2": "catalog:",
     "tw-animate-css": "catalog:",
     "vue": "catalog:"
   },

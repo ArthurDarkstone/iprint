@@ -250,6 +250,9 @@ importers:
       tailwindcss:
         specifier: 'catalog:'
         version: 4.1.11
+      tauri-plugin-printer-v2:
+        specifier: ^0.2.4
+        version: 0.2.4
       tw-animate-css:
         specifier: 'catalog:'
         version: 1.3.6
@@ -3265,6 +3268,9 @@ packages:
   tar@7.4.3:
     resolution: {integrity: sha512-5S7Va8hKfV7W5U6g3aYxXmlPoZVAwUMy9AOKyF2fVuZa2UD3qZjg578OrLRt8PcNN1PleVaL/5/yYATNL0ICUw==}
     engines: {node: '>=18'}
+
+  tauri-plugin-printer-v2@0.2.4:
+    resolution: {integrity: sha512-H2UcrDJ7fqim9aPQcsxZxk527/YCD3+bkQGz7OMJM7Xjd81e7OQzv8nctHb2aq2Gyj5nCSQcnQp7uFsSvfivWA==}
 
   taze@19.1.0:
     resolution: {integrity: sha512-MDN2WZb7TgsIvtFxqsLJ4GYy9dTDG5Dea/ZfPHrG98Cy7UH1EFIOzH+zDjnoP38ImuBbxZy1Zl8AbiwOZpYMUQ==}
@@ -6710,6 +6716,10 @@ snapshots:
       minizlib: 3.0.2
       mkdirp: 3.0.1
       yallist: 5.0.0
+
+  tauri-plugin-printer-v2@0.2.4:
+    dependencies:
+      '@tauri-apps/api': 2.7.0
 
   taze@19.1.0:
     dependencies:
