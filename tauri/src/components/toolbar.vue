@@ -89,7 +89,7 @@ async function handleSystemPrint() {
   // console.log('可用打印机:', printers)
 
   const result = await printPdf({
-    path: 'C:/Users/mechrev/Downloads/test.pdf',
+    path: '/path/to/some.pdf',
     printer: currentPrinter.value?.Name || printerList.value[0]?.Name,
     id: 'iprint-job-001',
     remove_after_print: false,
