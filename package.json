@@ -22,6 +22,7 @@
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "build": "pnpm run --filter=\"./packages/*\" --parallel build && tsdown",
+    "build:github": "pnpm --filter @iprint/tauri run build:github",
     "docs:dev": "vitepress dev docs",
     "docs:preview": "vitepress preview docs",
     "docs:build": "vitepress build docs --base /iprint/",
