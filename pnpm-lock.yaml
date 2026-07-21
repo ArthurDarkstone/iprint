@@ -93,6 +93,9 @@ catalogs:
     tailwindcss:
       specifier: 4.1.11
       version: 4.1.11
+    tauri-plugin-printer-v2:
+      specifier: ^0.2.4
+      version: 0.2.4
     taze:
       specifier: ^19.1.0
       version: 19.1.0
@@ -251,7 +254,7 @@ importers:
         specifier: 'catalog:'
         version: 4.1.11
       tauri-plugin-printer-v2:
-        specifier: ^0.2.4
+        specifier: 'catalog:'
         version: 0.2.4
       tw-animate-css:
         specifier: 'catalog:'

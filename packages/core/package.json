@@ -13,17 +13,9 @@
       "dev": "./src/index.ts",
       "default": "./dist/index.js"
     },
-    "./container": {
-      "dev": "./src/container.ts",
-      "default": "./dist/container.js"
-    },
-    "./element": {
-      "dev": "./src/element.ts",
-      "default": "./dist/element.js"
-    },
-    "./print": {
-      "dev": "./src/print.ts",
-      "default": "./dist/print.js"
+    "./iprint": {
+      "dev": "./src/iprint.ts",
+      "default": "./dist/iprint.js"
     },
     "./*": "./*"
   },
@@ -45,9 +37,7 @@
   "publishConfig": {
     "exports": {
       ".": "./dist/index.js",
-      "./container": "./dist/container.js",
-      "./element": "./dist/element.js",
-      "./print": "./dist/print.js",
+      "./iprint": "./dist/iprint.js",
       "./*": "./*"
     }
   }

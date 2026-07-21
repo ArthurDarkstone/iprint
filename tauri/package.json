@@ -15,6 +15,7 @@
     "build": "nr build:app",
     "build:vue": "vue-tsc --noEmit && vite build",
     "build:app": "tauri build",
+    "build:github": "vite build --base ./",
     "preview": "vite preview",
     "tauri": "tauri"
   },
