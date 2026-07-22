@@ -1,297 +1,315 @@
-import type { PrintData, PrintPanel, PrintResult, PrintTemplate as PrintTemplateType } from '../types'
-import { event } from '../utils'
+import type { GetHtmlOptions, PrintData, PrintPanelEntity, PrintTemplateEntity } from '../types'
+import type { Dom } from '../utils/dom'
+import { getPaperSize } from '../config'
+import { PrintElementTypeManager } from '../managers/PrintElementTypeManager'
+import { dom } from '../utils/dom'
+import { event } from '../utils/event'
+import { guid } from '../utils/guid'
+import { PrintPanel } from './PrintPanel'
+
+export interface PrintTemplateOptions {
+  template?: PrintTemplateEntity
+  settingContainer?: string
+  paginationContainer?: string
+  fields?: string[]
+  autoSave?: boolean
+  autoSaveKey?: string
+  autoSaveMode?: number
+}
 
 /**
- * Print template class for managing print layouts
+ * Print template: a collection of panels. Mirrors hiprint's PrintTemplate (class ct).
  */
 export class PrintTemplate {
-  private template: PrintTemplateType
-  private settingContainer?: string
-  private paginationContainer?: string
-  private panels: PrintPanel[] = []
+  id: string
+  printPanels: PrintPanel[] = []
+  fields: string[]
+  settingContainer?: string
+  paginationContainer?: string
+  container?: Dom
+  optionSetting?: any
+  editingPanel?: PrintPanel
+  autoSave?: boolean
+  autoSaveKey: string
+  autoSaveMode: number
 
-  constructor(options: {
-    template?: PrintTemplateType
-    settingContainer?: string
-    paginationContainer?: string
-  } = {}) {
-    this.template = options.template || { panels: [] }
+  constructor(options: PrintTemplateOptions = {}) {
+    this.id = guid()
     this.settingContainer = options.settingContainer
     this.paginationContainer = options.paginationContainer
-    this.panels = this.template.panels || []
+    this.fields = options.fields || []
+    this.autoSave = options.autoSave
+    this.autoSaveKey = options.autoSaveKey || 'hiprintAutoSave'
+    this.autoSaveMode = options.autoSaveMode || 1
+    const panels = options.template?.panels || []
+    if (panels.length === 0)
+      panels.push(PrintPanel.createDefaultPanel(this.id))
+    panels.forEach((panel) => {
+      const printPanel = new PrintPanel(panel, this.id)
+      this.printPanels.push(printPanel)
+    })
+    if (this.autoSave)
+      this.initAutoSave()
   }
 
-  /**
-   * Add a print panel to the template
-   */
-  addPrintPanel(options: {
-    width: number
-    height: number
-    paperHeader?: number
-    paperFooter?: number
-  }): PrintPanel {
-    const panel: PrintPanel = {
-      index: this.panels.length,
-      height: options.height,
-      width: options.width,
-      paperHeader: options.paperHeader,
-      paperFooter: options.paperFooter,
+  addPrintPanel(panelOptions?: Partial<PrintPanelEntity>, autoDesign = false): PrintPanel {
+    const entity: PrintPanelEntity = {
+      index: this.printPanels.length,
+      width: panelOptions?.width ?? 210,
+      height: panelOptions?.height ?? 297,
+      paperHeader: panelOptions?.paperHeader ?? 0,
+      paperFooter: panelOptions?.paperFooter,
       printElements: [],
-    }
-
-    this.panels.push(panel)
+    } as PrintPanelEntity
+    const panel = new PrintPanel(entity, this.id)
+    this.printPanels.push(panel)
+    if (autoDesign && this.container)
+      this.design(this.container)
+    event.trigger(`iprintTemplateDataChanged_${this.id}`)
     return panel
   }
 
-  /**
-   * Design the template in the specified container
-   */
-  design(container: string | HTMLElement): void {
-    const containerElement = typeof container === 'string'
-      ? document.querySelector(container) as HTMLElement
-      : container
-
-    if (!containerElement) {
-      console.error('Container element not found')
-      return
-    }
-
-    // Clear existing content
-    containerElement.innerHTML = ''
-
-    // Create panels
-    this.panels.forEach((panel, index) => {
-      const panelElement = this.createPanelElement(panel, index)
-      containerElement.appendChild(panelElement)
+  design(container: string | HTMLElement | Dom, options?: any): void {
+    this.container = container instanceof Dom ? container : dom(container as any)
+    this.container.empty()
+    this.printPanels.forEach((panel) => {
+      panel.design(options)
+      this.container!.append(panel.getTarget())
     })
-
-    // Initialize drag and drop functionality
-    this.initializeDragAndDrop(containerElement)
-  }
-
-  /**
-   * Get HTML representation of the template
-   */
-  getHtml(data?: PrintData): PrintResult {
-    const result = document.createElement('div')
-    result.className = 'iprint-template-result'
-
-    this.panels.forEach((panel, index) => {
-      const panelElement = this.createPanelElement(panel, index, data)
-      result.appendChild(panelElement)
-    })
-
-    return {
-      html: () => result.outerHTML,
+    this.selectPanel(0)
+    if (this.settingContainer) {
+      import('../optionItems/PrintElementOptionSetting').then(({ PrintElementOptionSetting }) => {
+        this.optionSetting = new PrintElementOptionSetting(this, this.settingContainer!)
+      })
     }
   }
 
-  /**
-   * Print the template
-   */
-  print(data?: PrintData): void {
-    const html = this.getHtml(data)
-    const printWindow = window.open('', '_blank')
-    if (printWindow) {
-      printWindow.document.write(`
-        <html>
-          <head>
-            <title>Print</title>
-            <style>
-              body { margin: 0; padding: 20px; }
-              .iprint-template-result { width: 100%; }
-            </style>
-          </head>
-          <body>
-            ${html.html()}
-          </body>
-        </html>
-      `)
-      printWindow.document.close()
-      printWindow.print()
-    }
-  }
-
-  /**
-   * Print by HTML element
-   */
-  printByHtml(element: HTMLElement | any): void {
-    const printWindow = window.open('', '_blank')
-    if (printWindow) {
-      const htmlContent = element instanceof HTMLElement
-        ? element.outerHTML
-        : element.html()
-
-      printWindow.document.write(`
-        <html>
-          <head>
-            <title>Print</title>
-            <style>
-              body { margin: 0; padding: 20px; }
-            </style>
-          </head>
-          <body>
-            ${htmlContent}
-          </body>
-        </html>
-      `)
-      printWindow.document.close()
-      printWindow.print()
-    }
-  }
-
-  /**
-   * Get JSON representation of the template
-   */
-  getJson(): PrintTemplateType {
-    return {
-      panels: this.panels.map(panel => ({
-        ...panel,
-        printElements: panel.printElements.map(element => ({
-          options: { ...element.options },
-          printElementType: { ...element.printElementType },
-        })),
-      })),
-    }
-  }
-
-  /**
-   * Set paper size
-   */
-  setPaper(paperTypeOrWidth: string | number, height?: number): void {
-    if (typeof paperTypeOrWidth === 'string') {
-      const paperSizes: Record<string, { width: number, height: number }> = {
-        A3: { width: 297, height: 420 },
-        A4: { width: 210, height: 297 },
-        A5: { width: 148, height: 210 },
-        B3: { width: 353, height: 500 },
-        B4: { width: 250, height: 353 },
-        B5: { width: 176, height: 250 },
+  selectPanel(index: number): void {
+    this.printPanels.forEach((panel, i) => {
+      if (i === index) {
+        panel.enable()
+        this.editingPanel = panel
       }
+      else {
+        panel.disable()
+      }
+    })
+  }
 
-      const size = paperSizes[paperTypeOrWidth]
+  deletePanel(index: number): void {
+    const panel = this.printPanels[index]
+    if (panel) {
+      panel.clear()
+      this.printPanels.splice(index, 1)
+    }
+  }
+
+  getPaneltotal(): number {
+    return this.printPanels.length
+  }
+
+  getPanel(index = 0): PrintPanel | undefined {
+    return this.printPanels[index]
+  }
+
+  getHtml(data?: PrintData, options?: GetHtmlOptions): Dom {
+    const result = dom('<div class="hiprint-printTemplate"></div>')
+    const dataArray = Array.isArray(data) ? data : [data]
+    dataArray.forEach((d) => {
+      this.printPanels.forEach((panel) => {
+        result.append(panel.getHtml(d, options))
+      })
+    })
+    return result
+  }
+
+  getSimpleHtml(data?: PrintData, options?: GetHtmlOptions): Dom {
+    return this.getHtml(data, options)
+  }
+
+  getJointHtml(data?: PrintData, options?: GetHtmlOptions, _extra?: any): Dom {
+    return this.getHtml(data, options)
+  }
+
+  getJson(): PrintTemplateEntity {
+    return {
+      panels: this.printPanels.map(panel => panel.getPanelEntity(false)),
+    }
+  }
+
+  getJsonTid(): PrintTemplateEntity {
+    return {
+      panels: this.printPanels.map(panel => panel.getPanelEntity(true)),
+    }
+  }
+
+  setPaper(paperTypeOrWidth: string | number, height?: number): void {
+    const panel = this.editingPanel || this.printPanels[0]
+    if (!panel)
+      return
+    if (typeof paperTypeOrWidth === 'string') {
+      const size = getPaperSize(paperTypeOrWidth)
       if (size) {
-        this.panels.forEach((panel) => {
-          panel.width = size.width
-          panel.height = size.height
-        })
+        panel.resize(paperTypeOrWidth, size.width, size.height)
       }
     }
     else if (typeof paperTypeOrWidth === 'number' && height) {
-      this.panels.forEach((panel) => {
-        panel.width = paperTypeOrWidth
-        panel.height = height
-      })
+      panel.resize(undefined, paperTypeOrWidth, height)
     }
-
-    event.trigger('iprintTemplateDataChanged')
+    event.trigger(`iprintTemplateDataChanged_${this.id}`)
   }
 
-  /**
-   * Rotate paper
-   */
   rotatePaper(): void {
-    this.panels.forEach((panel) => {
-      const temp = panel.width
-      panel.width = panel.height
-      panel.height = temp
-    })
-    event.trigger('iprintTemplateDataChanged')
+    const panel = this.editingPanel || this.printPanels[0]
+    panel?.rotatePaper()
+    event.trigger(`iprintTemplateDataChanged_${this.id}`)
   }
 
-  /**
-   * Clear the template
-   */
   clear(): void {
-    this.panels = []
-    event.trigger('iprintTemplateDataChanged')
+    const panel = this.editingPanel || this.printPanels[0]
+    panel?.clear()
+    event.trigger(`iprintTemplateDataChanged_${this.id}`)
   }
 
-  /**
-   * Create panel element
-   */
-  private createPanelElement(panel: PrintPanel, index: number, data?: PrintData): HTMLElement {
-    const panelElement = document.createElement('div')
-    panelElement.className = 'iprint-panel'
-    panelElement.style.position = 'relative'
-    panelElement.style.width = `${panel.width}mm`
-    panelElement.style.height = `${panel.height}mm`
-    panelElement.style.border = '1px solid #ccc'
-    panelElement.style.margin = '10px'
-    panelElement.style.pageBreakAfter = 'always'
+  getPaperType(index = 0): string | undefined {
+    return this.printPanels[index]?.paperType
+  }
 
-    // Create print elements
-    panel.printElements.forEach((element) => {
-      const elementDiv = this.createPrintElement(element, data)
-      panelElement.appendChild(elementDiv)
+  getOrient(index = 0): 1 | 2 {
+    const panel = this.printPanels[index]
+    if (!panel)
+      return 1
+    return panel.height >= panel.width ? 1 : 2
+  }
+
+  getPrintStyle(index = 0): string {
+    return this.printPanels[index]?.getPrintSizeStyle() || ''
+  }
+
+  deletePrintElement(printElement: any): void {
+    this.printPanels.forEach((panel) => {
+      const idx = panel.printElements.indexOf(printElement)
+      if (idx >= 0)
+        panel.printElements.splice(idx, 1)
     })
-
-    return panelElement
+    event.trigger(`iprintTemplateDataChanged_${this.id}`)
   }
 
-  /**
-   * Create print element
-   */
-  private createPrintElement(element: any, _data?: PrintData): HTMLElement {
-    const elementDiv = document.createElement('div')
-    elementDiv.className = `iprint-printElement iprint-printElement-${element.printElementType.type}`
-    elementDiv.style.position = 'absolute'
-    elementDiv.style.left = `${element.options.left || 0}pt`
-    elementDiv.style.top = `${element.options.top || 0}pt`
-    elementDiv.style.width = `${element.options.width || 100}pt`
-    elementDiv.style.height = `${element.options.height || 20}pt`
-
-    // Set content based on element type
-    switch (element.printElementType.type) {
-      case 'text':
-        elementDiv.textContent = element.options.title || ''
-        elementDiv.style.fontSize = `${element.options.fontSize || 12}px`
-        elementDiv.style.color = element.options.color || '#000000'
-        elementDiv.style.textAlign = element.options.textAlign || 'left'
-        break
-      case 'image':
-        elementDiv.style.backgroundImage = `url(${element.options.src || ''})`
-        elementDiv.style.backgroundSize = 'contain'
-        elementDiv.style.backgroundRepeat = 'no-repeat'
-        elementDiv.style.backgroundPosition = 'center'
-        break
-      case 'hline':
-        elementDiv.style.borderTop = `${element.options.borderWidth || 1}px solid ${element.options.borderColor || '#000000'}`
-        break
-      case 'vline':
-        elementDiv.style.borderLeft = `${element.options.borderWidth || 1}px solid ${element.options.borderColor || '#000000'}`
-        break
-      case 'rect':
-        elementDiv.style.border = `${element.options.borderWidth || 1}px solid ${element.options.borderColor || '#000000'}`
-        elementDiv.style.backgroundColor = element.options.backgroundColor || 'transparent'
-        break
-      case 'oval':
-        elementDiv.style.border = `${element.options.borderWidth || 1}px solid ${element.options.borderColor || '#000000'}`
-        elementDiv.style.borderRadius = '50%'
-        elementDiv.style.backgroundColor = element.options.backgroundColor || 'transparent'
-        break
-    }
-
-    return elementDiv
+  getElementByTid(tid: string, panelIndex = 0): any[] {
+    return this.printPanels[panelIndex]?.getElementByTid(tid) || []
   }
 
-  /**
-   * Initialize drag and drop functionality
-   */
-  private initializeDragAndDrop(_container: HTMLElement): void {
-    // This would implement the drag and drop functionality
-    // For now, it's a placeholder
-    console.log('Drag and drop initialization would go here')
+  getElementByName(name: string, panelIndex = 0): any[] {
+    return this.printPanels[panelIndex]?.getElementByName(name) || []
   }
 
-  /**
-   * Event handling
-   */
-  on(eventName: string, callback: Function): void {
-    event.on(eventName, callback)
+  getFields(): string[] {
+    return this.fields
   }
 
-  off(eventName: string, callback: Function): void {
-    event.off(eventName, callback)
+  setFields(fields: string[]): void {
+    this.fields = fields
+  }
+
+  getFieldsInPanel(): string[] {
+    const fields: string[] = []
+    this.printPanels.forEach((panel) => {
+      panel.getFieldsInPanel().forEach((f) => {
+        if (!fields.includes(f))
+          fields.push(f)
+      })
+    })
+    return fields
+  }
+
+  print(data?: PrintData, options?: GetHtmlOptions): void {
+    const html = this.getHtml(data, options)
+    browserPrint(html)
+  }
+
+  printByHtml(html: Dom | string): void {
+    browserPrint(html instanceof Dom ? html : dom(html as any))
+  }
+
+  async print2(_data?: PrintData, _options?: GetHtmlOptions): Promise<void> {
+    const { print2 } = await import('../print/webSocket')
+    return print2(this, _data, _options)
+  }
+
+  async printByHtml2(_html: Dom | string, _options?: GetHtmlOptions): Promise<void> {
+    const { printByHtml2 } = await import('../print/webSocket')
+    return printByHtml2(this, _html instanceof Dom ? _html : dom(_html as any), _options)
+  }
+
+  async toPdf(data: PrintData, filename: string, options?: any): Promise<void> {
+    const { toPdf } = await import('../print/pdfExport')
+    return toPdf(this, data, filename, options)
+  }
+
+  on(eventName: string, handler: Function): void {
+    event.on(`${eventName}_${this.id}`, handler as any)
+  }
+
+  off(eventName: string, handler: Function): void {
+    event.off(`${eventName}_${this.id}`, handler as any)
+  }
+
+  clientIsOpened(): boolean {
+    return false
+  }
+
+  getPrinterList(): any[] {
+    return []
+  }
+
+  initAutoSave(): void {
+    event.on(`iprintTemplateDataChanged_${this.id}`, () => {
+      try {
+        const json = this.autoSaveMode === 1 ? this.getJson() : this.getJsonTid()
+        localStorage.setItem(this.autoSaveKey, JSON.stringify(json))
+      }
+      catch (e) {
+        console.warn('autoSave failed', e)
+      }
+    })
+  }
+
+  imageToBase64(): void {
+    // Implemented in Phase 6 (print/imageBase64) — converts <img> to base64 for socket/PDF.
+  }
+
+  getPrintElementTypeManager(): PrintElementTypeManager {
+    return PrintElementTypeManager.getInstance()
+  }
+}
+
+/**
+ * Basic browser print via hidden iframe. Phase 6 wires the full hiwprint plugin.
+ */
+function browserPrint(html: Dom): void {
+  const existing = document.getElementById('hiwprint_iframe')
+  existing?.remove()
+  const iframe = document.createElement('iframe')
+  iframe.id = 'hiwprint_iframe'
+  iframe.style.cssText = 'visibility:hidden;height:0;width:0;position:absolute'
+  document.body.appendChild(iframe)
+  const printCss = Array.from(document.querySelectorAll('link[rel="stylesheet"], style'))
+    .map((node) => {
+      if (node.tagName === 'STYLE')
+        return `<style>${node.textContent}</style>`
+      return (node as HTMLLinkElement).outerHTML
+    })
+    .join('\n')
+  const doc = iframe.contentWindow?.document
+  if (!doc)
+    return
+  doc.open()
+  doc.write(`<!DOCTYPE html><html><head>${printCss}</head><body>${(html as any).els?.[0]?.outerHTML || ''}</body></html>`)
+  doc.close()
+  iframe.onload = () => {
+    setTimeout(() => {
+      iframe.contentWindow?.focus()
+      iframe.contentWindow?.print()
+    }, 300)
   }
 }

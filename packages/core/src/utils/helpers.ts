@@ -135,3 +135,53 @@ export function orderBy<T>(array: T[], compareFunction?: (a: T, b: T) => number)
 
   return [...orderBy(left, compareFunction), pivot, ...orderBy(right, compareFunction)]
 }
+
+/**
+ * Format a Date like hinnn.dateFormat: tokens M+ d+ H+ m+ s+ q+ S y+
+ */
+export function dateFormat(date: Date, format: string): string {
+  const map: Array<[RegExp, () => string]> = [
+    [/(y+)/, () => String(date.getFullYear())],
+    [/(M+)/, () => String(date.getMonth() + 1)],
+    [/(d+)/, () => String(date.getDate())],
+    [/(H+)/, () => String(date.getHours())],
+    [/(m+)/, () => String(date.getMinutes())],
+    [/(s+)/, () => String(date.getSeconds())],
+    [/(q+)/, () => String(Math.floor((date.getMonth() + 3) / 3))],
+    [/S/, () => String(date.getMilliseconds())],
+  ]
+  let result = format
+  map.forEach(([re, getter]) => {
+    const m = re.exec(result)
+    if (m) {
+      const token = m[0]
+      const val = getter()
+      const pad = token.length > 1 && token !== 'S'
+      result = result.replace(token, pad ? val.padStart(token.length, '0') : val)
+    }
+  })
+  return result
+}
+
+/**
+ * Format a value by a hiprint dataType/format pair (datetime / boolean).
+ * Mirrors hiprint's getData: dateFormat for datetime, "trueText:falseText" split for boolean.
+ */
+export function formatDataType(value: any, dataType?: string, format?: string): any {
+  if (!dataType || !format)
+    return value
+  if (dataType === 'datetime') {
+    if (value == null || value === '')
+      return value
+    const d = value instanceof Date ? value : new Date(value)
+    if (Number.isNaN(d.getTime()))
+      return value
+    return dateFormat(d, format)
+  }
+  if (dataType === 'boolean' || dataType === 'boolen') {
+    const parts = format.split(':')
+    if (parts.length > 0)
+      return value === true || value === 'true' ? parts[0] : parts[1]
+  }
+  return value
+}

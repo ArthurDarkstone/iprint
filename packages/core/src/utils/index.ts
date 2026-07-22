@@ -1,3 +1,6 @@
+export * from './dom'
 export * from './event'
+export * from './guid'
 export * from './helpers'
+export * from './hiprintlib'
 export * from './units'

@@ -1,161 +1,123 @@
 <script setup lang="ts">
-import { print } from '@iprint/core'
 import { useDark } from '@vueuse/core'
-
-import { getPrinters, printPdf } from 'tauri-plugin-printer-v2'
-
 import { onMounted, ref } from 'vue'
-import { useStatus } from '@/store/status'
+import { useTemplate } from '@/store/template'
 
-const { currentStatus, setStatus } = useStatus()
+const { getOrCreate, printData } = useTemplate()
 
-// select tools
-const tools = [
-  {
-    name: 'pointer',
-    icon: 'icon-[bx--pointer]',
-    action: () => {
-      setStatus('pointer')
-    },
-  },
-  {
-    name: 'rect',
-    icon: 'icon-[subway--rectangular]',
-    action: () => {
-      setStatus('rect')
-    },
-  },
-]
+const paperSizes = ['A3', 'A4', 'A5', 'B3', 'B4', 'B5'] as const
+const customWidth = ref(210)
+const customHeight = ref(297)
+
+function setPaper(size: string) {
+  getOrCreate().setPaper(size)
+}
+
+function setCustomPaper() {
+  getOrCreate().setPaper(customWidth.value, customHeight.value)
+}
+
+function rotatePaper() {
+  getOrCreate().rotatePaper()
+}
+
+function clearTemplate() {
+  getOrCreate().clear()
+}
+
+function browserPrint() {
+  getOrCreate().print(printData.value)
+}
+
+async function exportPdf() {
+  await getOrCreate().toPdf(printData.value, 'iprint-export')
+}
+
+function getJson() {
+  return JSON.stringify(getOrCreate().getJson(), null, 2)
+}
+
+function getRenderedHtml() {
+  const html = getOrCreate().getHtml(printData.value)
+  return (html as any)?.els?.[0]?.outerHTML || ''
+}
+
+function showJson() {
+  // eslint-disable-next-line no-alert
+  alert(getJson())
+}
+
+function showHtml() {
+  // eslint-disable-next-line no-alert
+  alert(getRenderedHtml())
+}
 
 function handleGithub() {
   window.open('https://github.com/ArthurDarkstone/iprint', '_blank')
 }
 
-async function handlePrint() {
-  try {
-    await Promise.resolve(print('#viewport', {
-      style: `
-        #viewport {
-          transform: none !important;
-          border: none !important;
-        }
-      `,
-    }))
-  }
-  catch (err) {
-    console.error('Print failed:', err)
-    // Optionally surface a UI toast here.
-  }
-}
-
-//  {
-//   Name: 'LABEL MATRIX 2024 BSPRINT-1'
-//   DriverName: 'Printer THT 8.0'
-//   JobCount: 0
-//   PrintProcessor: 'winprint'
-//   PortName: 'BSPRINT-1'
-//   ShareName: ''
-//   ComputerName: ''
-//   PrinterStatus: 0
-//   Shared: false
-//   Type: 0
-//   Priority: 1
-// }
+const isDark = useDark()
+isDark.value = true
 
 interface Printer {
   Name: string
-  DriverName: string
-  JobCount: number
-  PrintProcessor: string
-  PortName: string
-  ShareName: string
-  ComputerName: string
-  PrinterStatus: number
-  Shared: boolean
-  Type: number
-  Priority: number
 }
 const currentPrinter = ref<Printer | null>(null)
-
 const printerList = ref<Printer[]>([])
 
 onMounted(async () => {
-  const printers = JSON.parse(await getPrinters())
-  printerList.value = printers
+  try {
+    const { getPrinters } = await import('tauri-plugin-printer-v2')
+    const printers = JSON.parse(await getPrinters())
+    printerList.value = printers
+  }
+  catch {
+    // printer plugin only available in tauri runtime
+  }
 })
-
-async function handleSystemPrint() {
-  // const printers = JSON.parse(await getPrinters())
-  // console.log('可用打印机:', printers)
-
-  const result = await printPdf({
-    path: '/path/to/some.pdf',
-    printer: currentPrinter.value?.Name || printerList.value[0]?.Name,
-    id: 'iprint-job-001',
-    remove_after_print: false,
-    print_settings: JSON.stringify({
-      orientation: 'landscape',
-      method: 'simplex', // duplex | simplex | duplexshort
-      paper: 'A4', // "A2" | "A3" | "A4" | "A5" | "A6" | "letter" | "legal" | "tabloid"
-      scale: 'noscale', // "noscale" | "shrink" | "fit"
-      repeat: 1, // total copies,
-      // range: "1,2,3"    // print page 1,2,3
-      range: { // print page 1 - 3
-        from: 1,
-        to: 3,
-      },
-    }),
-  })
-
-  // eslint-disable-next-line no-console
-  console.log('打印结果:', result)
-}
-
-const isDark = useDark()
-
-isDark.value = true
-
-// const toggleDark (isDark)
 </script>
 
 <template>
-  <div class="w-full h-12 bg-background border-b text-white  flex items-center  select-none justify-between ">
-    <div class="flex items-center ml-4">
-      <div v-for="tool in tools" :key="tool.name" class="cursor-pointer mr-4" @click="tool.action">
-        <span :class="`${tool.icon} ${currentStatus === tool.name ? 'text-blue-500' : 'text-white'}`" />
-      </div>
+  <div class="w-full h-12 bg-background border-b text-white flex items-center select-none justify-between">
+    <div class="flex items-center ml-4 gap-1">
+      <button v-for="size in paperSizes" :key="size" class="hiprint-toolbar-item px-2 py-1 border border-gray-500 rounded text-sm hover:bg-gray-700" @click="setPaper(size)">
+        {{ size }}
+      </button>
+      <input v-model.number="customWidth" type="number" class="w-14 mx-1 px-1 text-black" placeholder="宽">
+      <input v-model.number="customHeight" type="number" class="w-14 px-1 text-black" placeholder="高">
+      <button class="hiprint-toolbar-item px-2 py-1 border border-gray-500 rounded text-sm hover:bg-gray-700" @click="setCustomPaper">
+        自定义
+      </button>
+      <button class="hiprint-toolbar-item px-2 py-1 border border-gray-500 rounded text-sm hover:bg-gray-700" @click="rotatePaper">
+        旋转
+      </button>
+      <button class="hiprint-toolbar-item px-2 py-1 border border-gray-500 rounded text-sm hover:bg-gray-700" @click="clearTemplate">
+        清空
+      </button>
     </div>
 
-    <div class=" w-20 text-center ">
+    <div class="w-20 text-center font-semibold">
       iPrint
     </div>
 
-    <div class="mr-4 flex items-center relative">
-      <!-- theme -->
-      <!-- <span class="icon-[mdi--theme-light-dark] text-xxl cursor-pointer" @click="() => toggleDark()" /> -->
-
-      <!-- github -->
-
-      <select v-model="currentPrinter" class=" w-40 mr-2 p-1 rounded bg-gray-700 text-white">
+    <div class="mr-4 flex items-center gap-2">
+      <select v-model="currentPrinter" class="w-40 px-1 py-1 rounded bg-gray-700 text-white text-sm">
         <option v-for="printer in printerList" :key="printer.Name" :value="printer">
           {{ printer.Name }}
         </option>
       </select>
-
-      <button
-        class=" px-2 py-1 mr-2 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-300"
-        @click="handleSystemPrint"
-      >
-        System Print
+      <button class="px-2 py-1 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-300 text-sm" @click="showJson">
+        JSON
       </button>
-
-      <button
-        class=" px-2 py-1 mr-2 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-300"
-        @click="handlePrint"
-      >
-        Browser Print
+      <button class="px-2 py-1 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-300 text-sm" @click="showHtml">
+        HTML
       </button>
-
+      <button class="px-2 py-1 bg-green-600 text-white rounded cursor-pointer hover:bg-green-400 text-sm" @click="exportPdf">
+        PDF
+      </button>
+      <button class="px-2 py-1 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-300 text-sm" @click="browserPrint">
+        打印
+      </button>
       <span class="icon-[mdi--github] text-xxl cursor-pointer" @click="handleGithub" />
     </div>
   </div>

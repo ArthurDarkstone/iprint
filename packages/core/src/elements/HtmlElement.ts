@@ -1,50 +1,62 @@
-import type { PrintData, PrintElementOptions, PrintElementType } from '../types'
+import type { PrintData, PrintElementOptions } from '../types'
+import type { Dom } from '../utils/dom'
+import type { PrintElementType } from './PrintElementType'
+import { dom } from '../utils/dom'
 import { BasePrintElement } from './BasePrintElement'
 
 /**
- * HTML print element
+ * HTML print element. Renders a formatter result or options.content as raw HTML.
  */
 export class HtmlElement extends BasePrintElement {
   constructor(printElementType: PrintElementType, options?: PrintElementOptions) {
     super(printElementType, options)
   }
 
-  createTarget(title: string, data: any): any {
-    const content = this.getData(data)
-    const element = document.createElement('div')
-    element.className = 'iprint-printElement iprint-printElement-html'
-    element.style.position = 'absolute'
-    element.style.left = `${this.options.left || 0}pt`
-    element.style.top = `${this.options.top || 0}pt`
-    element.style.width = `${this.options.width || 100}pt`
-    element.style.height = `${this.options.height || 100}pt`
-    element.innerHTML = content || ''
-    return element
+  override getData(data?: PrintData): any {
+    if (data)
+      return data[this.getField()] ?? this.options.content ?? ''
+    return this.options.content ?? this.printElementType.data ?? ''
   }
 
-  getData(data?: PrintData): any {
-    if (data) {
-      return data[this.getField()] || this.options.content || ''
-    }
-    return this.options.content || this.printElementType.data || ''
-  }
-
-  getHtml(paper: any, data?: PrintData, _options?: any): any[] {
-    this.setCurrenttemplateData(data)
-    const results: any[] = []
-
-    const content = this.getData(data)
+  updateTargetHtml(target: Dom): void {
     const formatter = this.getFormatter()
-    const formattedContent = formatter ? formatter(content, this.options, null, this.currentTemplateData) : content
+    const content = target.find('.hiprint-printElement-html-content')
+    if (formatter) {
+      const html = formatter(this.getData(this.currentTemplateData), this.options, this.currentTemplateData)
+      content.html(html)
+    }
+    else if (this.options.content) {
+      content.append(this.options.content)
+    }
+  }
 
-    const element = this.createTarget(this.getTitle(), data)
-    element.innerHTML = formattedContent
+  createTarget(title: string, data: any): Dom {
+    const target = dom('<div class="hiprint-printElement hiprint-printElement-html" style="position: absolute;"><div class="hiprint-printElement-html-content" style="height:100%;width:100%"></div></div>')
+    const formatter = this.getFormatter()
+    const content = target.find('.hiprint-printElement-html-content')
+    if (formatter) {
+      const html = formatter(this.getData(data), this.options, data)
+      content.append(html)
+    }
+    else if (this.options.content) {
+      content.append(this.options.content)
+    }
+    return target
+  }
 
-    results.push({
-      target: element,
-      printLine: (this.options.top || 0) + (this.options.height || 100),
-    })
+  override getHtml(paper: any, data?: PrintData, _options?: any): any[] {
+    this.setCurrenttemplateData(data)
+    const value = this.getData(data)
+    const target = this.createTarget(this.getTitle(), value)
+    this.updateTargetSize(target)
+    this.css(target, value)
+    return [{
+      target,
+      printLine: (this.options.top || 0) + (this.options.height || 90),
+    }]
+  }
 
-    return results
+  override getHtml2(paper: any, data?: PrintData, options?: any): any[] {
+    return this.getHtml(paper, data, options)
   }
 }

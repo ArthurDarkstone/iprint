@@ -1,57 +1,60 @@
-import type { PrintData, PrintElementOptions, PrintElementType } from '../types'
+import type { PrintData, PrintElementOptions } from '../types'
+import type { Dom } from '../utils/dom'
+import type { PrintElementType } from './PrintElementType'
+import { dom } from '../utils/dom'
 import { BasePrintElement } from './BasePrintElement'
 
 /**
- * Image print element
+ * Image print element. Renders an <img> into .hiprint-printElement-image-content.
  */
 export class ImageElement extends BasePrintElement {
   constructor(printElementType: PrintElementType, options?: PrintElementOptions) {
     super(printElementType, options)
   }
 
-  getReizeableShowPoints(): string[] {
+  override getReizeableShowPoints(): string[] {
     return ['se']
   }
 
-  getData(data?: PrintData): any {
-    if (data) {
-      return data[this.getField()] || this.options.src || this.printElementType.data || ''
-    }
-    return this.options.src || this.printElementType.data || ''
-  }
-
-  createTarget(title: string, data: any): any {
-    const src = this.getData(data)
-    const element = document.createElement('div')
-    element.className = 'iprint-printElement iprint-printElement-image'
-    element.style.position = 'absolute'
-    element.style.left = `${this.options.left || 0}pt`
-    element.style.top = `${this.options.top || 0}pt`
-    element.style.width = `${this.options.width || 100}pt`
-    element.style.height = `${this.options.height || 100}pt`
-    element.style.backgroundImage = `url(${src})`
-    element.style.backgroundSize = 'contain'
-    element.style.backgroundRepeat = 'no-repeat'
-    element.style.backgroundPosition = 'center'
-    return element
-  }
-
-  getHtml(paper: any, data?: PrintData, _options?: any): any[] {
-    this.setCurrenttemplateData(data)
-    const results: any[] = []
-
-    const src = this.getData(data)
+  override getData(data?: PrintData): any {
+    let e = ''
+    if (data)
+      e = this.getField() ? (data[this.getField()] || '') : (this.options.src || this.printElementType.data || '')
+    else
+      e = this.options.src || this.printElementType.data || ''
     const formatter = this.getFormatter()
-    const formattedSrc = formatter ? formatter(src, this.options, null, this.currentTemplateData) : src
+    if (formatter)
+      e = formatter(e, this.options, this.currentTemplateData)
+    return e || ''
+  }
 
-    const element = this.createTarget(this.getTitle(), data)
-    element.style.backgroundImage = `url(${formattedSrc})`
+  createTarget(title: string, data: any): Dom {
+    const target = dom('<div class="hiprint-printElement hiprint-printElement-image" style="position: absolute;"><div class="hiprint-printElement-image-content" style="height:100%;width:100%"></div></div>')
+    this.updateTargetImage(target, title, data)
+    return target
+  }
 
-    results.push({
-      target: element,
+  updateTargetImage(target: Dom, _title: string, data: any): void {
+    const content = target.find('.hiprint-printElement-image-content')
+    if (content.find('img').length)
+      content.find('img').attr('src', data)
+    else
+      content.html(`<img style="width:100%;height:100%;" src="${data}">`)
+  }
+
+  override getHtml(paper: any, data?: PrintData, _options?: any): any[] {
+    this.setCurrenttemplateData(data)
+    const value = this.getData(data)
+    const target = this.createTarget(this.getTitle(), value)
+    this.updateTargetSize(target)
+    this.css(target, value)
+    return [{
+      target,
       printLine: (this.options.top || 0) + (this.options.height || 100),
-    })
+    }]
+  }
 
-    return results
+  override getHtml2(paper: any, data?: PrintData, options?: any): any[] {
+    return this.getHtml(paper, data, options)
   }
 }

@@ -1,104 +1,231 @@
-import type { IPrintConfig, PrintElementOptions } from '../types'
+import type { ElementTypeCatalog, IPrintConfig, PrintElementTypeName } from '../types'
+import { getPaperSize } from './paperSizes'
+
+export * from './paperSizes'
+
+function so(names: string[]): { name: string, hidden: boolean }[] {
+  return names.map(name => ({ name, hidden: false }))
+}
 
 /**
- * Default configuration for iprint
+ * Full option catalog per element type, ported 1:1 from demo/hiprint/hiprint.config.js
  */
 export const defaultConfig: IPrintConfig = {
   text: {
-    left: 0,
-    top: 0,
-    width: 100,
-    height: 20,
-    title: '文本',
-    fontSize: 12,
-    fontWeight: 'normal',
-    color: '#000000',
-    textAlign: 'left',
-    lineHeight: 16,
-    letterSpacing: 0,
-    hideTitle: false,
+    supportOptions: so([
+      'title',
+      'field',
+      'testData',
+      'dataType',
+      'fontFamily',
+      'fontSize',
+      'fontWeight',
+      'letterSpacing',
+      'color',
+      'textDecoration',
+      'textAlign',
+      'textContentVerticalAlign',
+      'lineHeight',
+      'textType',
+      'barcodeMode',
+      'hideTitle',
+      'showInPage',
+      'unShowInPage',
+      'fixed',
+      'axis',
+      'transform',
+      'optionsGroup',
+      'borderLeft',
+      'borderTop',
+      'borderRight',
+      'borderBottom',
+      'borderWidth',
+      'borderColor',
+      'contentPaddingLeft',
+      'contentPaddingTop',
+      'contentPaddingRight',
+      'contentPaddingBottom',
+      'backgroundColor',
+      'formatter',
+      'styler',
+    ]),
+    default: { width: 120, height: 9.75 },
   },
   image: {
-    left: 0,
-    top: 0,
-    width: 100,
-    height: 100,
-    src: '',
-    hideTitle: false,
-  },
-  table: {
-    left: 0,
-    top: 0,
-    width: 200,
-    height: 100,
-    content: '',
-    hideTitle: false,
-    isEnableEdit: true,
-    isEnableContextMenu: true,
-    isEnableEditField: true,
-    isEnableInsertRow: true,
-    isEnableDeleteRow: true,
-    isEnableInsertColumn: true,
-    isEnableDeleteColumn: true,
-    isEnableMergeCell: true,
-    columnResizable: true,
-    columnAlignEditable: true,
-  },
-  hline: {
-    left: 0,
-    top: 0,
-    width: 100,
-    height: 1,
-    borderColor: '#000000',
-    borderWidth: 1,
-  },
-  vline: {
-    left: 0,
-    top: 0,
-    width: 1,
-    height: 100,
-    borderColor: '#000000',
-    borderWidth: 1,
-  },
-  rect: {
-    left: 0,
-    top: 0,
-    width: 100,
-    height: 100,
-    borderColor: '#000000',
-    borderWidth: 1,
-    backgroundColor: 'transparent',
-  },
-  oval: {
-    left: 0,
-    top: 0,
-    width: 100,
-    height: 100,
-    borderColor: '#000000',
-    borderWidth: 1,
-    backgroundColor: 'transparent',
-  },
-  html: {
-    left: 0,
-    top: 0,
-    width: 100,
-    height: 100,
-    content: '',
-    hideTitle: false,
+    supportOptions: so([
+      'field',
+      'src',
+      'showInPage',
+      'fixed',
+      'axis',
+      'transform',
+      'formatter',
+      'styler',
+    ]),
+    default: {},
   },
   longText: {
-    left: 0,
-    top: 0,
-    width: 200,
-    height: 100,
-    title: '长文本',
-    fontSize: 12,
-    fontWeight: 'normal',
-    color: '#000000',
-    textAlign: 'left',
-    lineHeight: 16,
-    letterSpacing: 0,
-    hideTitle: false,
+    supportOptions: so([
+      'title',
+      'field',
+      'testData',
+      'fontFamily',
+      'fontSize',
+      'fontWeight',
+      'letterSpacing',
+      'textAlign',
+      'lineHeight',
+      'color',
+      'hideTitle',
+      'longTextIndent',
+      'leftSpaceRemoved',
+      'showInPage',
+      'unShowInPage',
+      'fixed',
+      'axis',
+      'lHeight',
+      'transform',
+      'optionsGroup',
+      'borderLeft',
+      'borderTop',
+      'borderRight',
+      'borderBottom',
+      'borderWidth',
+      'borderColor',
+      'contentPaddingLeft',
+      'contentPaddingTop',
+      'contentPaddingRight',
+      'contentPaddingBottom',
+      'backgroundColor',
+      'formatter',
+      'styler',
+    ]),
+    default: { height: 42, width: 550 },
+  },
+  table: {
+    supportOptions: so([
+      'field',
+      'fontFamily',
+      'fontSize',
+      'lineHeight',
+      'textAlign',
+      'gridColumns',
+      'gridColumnsGutter',
+      'tableBorder',
+      'tableHeaderBorder',
+      'tableHeaderCellBorder',
+      'tableHeaderRowHeight',
+      'tableHeaderBackground',
+      'tableHeaderFontSize',
+      'tableHeaderFontWeight',
+      'tableBodyRowHeight',
+      'tableBodyRowBorder',
+      'tableBodyCellBorder',
+      'axis',
+      'lHeight',
+      'autoCompletion',
+      'columns',
+      'styler',
+      'rowStyler',
+      'tableFooterRepeat',
+      'footerFormatter',
+      'gridColumnsFooterFormatter',
+    ]),
+    default: { width: 550 },
+  },
+  tableCustom: {
+    supportOptions: so([
+      'field',
+      'fontFamily',
+      'fontSize',
+      'textAlign',
+      'tableBorder',
+      'tableHeaderBorder',
+      'tableHeaderCellBorder',
+      'tableHeaderRowHeight',
+      'tableHeaderFontSize',
+      'tableHeaderFontWeight',
+      'tableHeaderBackground',
+      'tableBodyRowHeight',
+      'tableBodyRowBorder',
+      'tableBodyCellBorder',
+      'axis',
+      'lHeight',
+      'autoCompletion',
+      'tableFooterRepeat',
+    ]),
+    default: { width: 550 },
+  },
+  hline: {
+    supportOptions: so([
+      'borderColor',
+      'borderWidth',
+      'showInPage',
+      'fixed',
+      'axis',
+      'transform',
+      'borderStyle',
+    ]),
+    default: { borderWidth: 0.75, height: 9, width: 90 },
+  },
+  vline: {
+    supportOptions: so([
+      'borderColor',
+      'borderWidth',
+      'showInPage',
+      'fixed',
+      'axis',
+      'transform',
+      'borderStyle',
+    ]),
+    default: { borderWidth: undefined, height: 90, width: 9 },
+  },
+  rect: {
+    supportOptions: so([
+      'borderColor',
+      'borderWidth',
+      'showInPage',
+      'fixed',
+      'axis',
+      'transform',
+      'borderStyle',
+    ]),
+    default: { borderWidth: undefined, height: 90, width: 90 },
+  },
+  oval: {
+    supportOptions: so([
+      'borderColor',
+      'borderWidth',
+      'showInPage',
+      'fixed',
+      'axis',
+      'transform',
+      'borderStyle',
+    ]),
+    default: { borderWidth: undefined, height: 90, width: 90 },
+  },
+  html: {
+    supportOptions: so([
+      'showInPage',
+      'unShowInPage',
+      'fixed',
+      'axis',
+      'formatter',
+    ]),
+    default: { height: 90, width: 90 },
+  },
+  tableColumn: {
+    supportOptions: so([
+      'title',
+      'align',
+      'halign',
+      'vAlign',
+      'paddingLeft',
+      'paddingRight',
+      'formatter2',
+      'styler2',
+    ]),
+    default: { height: 90, width: 90 },
   },
 }
 
@@ -108,9 +235,11 @@ export const defaultConfig: IPrintConfig = {
 export class ConfigManager {
   private static instance: ConfigManager
   private config: IPrintConfig
+  movingDistance = 1.5
+  paperHeightTrim = 1
 
   private constructor() {
-    this.config = { ...defaultConfig }
+    this.config = JSON.parse(JSON.stringify(defaultConfig)) as IPrintConfig
   }
 
   static getInstance(): ConfigManager {
@@ -120,22 +249,39 @@ export class ConfigManager {
     return ConfigManager.instance
   }
 
-  init(config?: Partial<IPrintConfig>): void {
-    if (config) {
-      this.config = { ...this.config, ...config }
+  init(options?: Partial<IPrintConfig> & { movingDistance?: number, paperHeightTrim?: number }): void {
+    if (options) {
+      const { movingDistance, paperHeightTrim, ...rest } = options
+      if (movingDistance !== undefined)
+        this.movingDistance = movingDistance
+      if (paperHeightTrim !== undefined)
+        this.paperHeightTrim = paperHeightTrim
+      this.config = { ...this.config, ...rest }
     }
   }
 
-  get(elementType: keyof IPrintConfig): PrintElementOptions {
-    return this.config[elementType]
+  getCatalog(elementType: PrintElementTypeName | string): ElementTypeCatalog {
+    return this.config[elementType] || { supportOptions: [], default: {} }
   }
 
-  set(elementType: keyof IPrintConfig, options: PrintElementOptions): void {
-    this.config[elementType] = { ...this.config[elementType], ...options }
+  get(elementType: PrintElementTypeName | string): ElementTypeCatalog {
+    return this.getCatalog(elementType)
+  }
+
+  getDefaults(elementType: PrintElementTypeName | string): Record<string, any> {
+    return { ...(this.getCatalog(elementType).default || {}) }
+  }
+
+  set(elementType: PrintElementTypeName | string, catalog: Partial<ElementTypeCatalog>): void {
+    this.config[elementType] = { ...this.config[elementType], ...catalog }
+  }
+
+  getPaperSize(name: string): { width: number, height: number } | undefined {
+    return getPaperSize(name)
   }
 
   getAll(): IPrintConfig {
-    return { ...this.config }
+    return JSON.parse(JSON.stringify(this.config)) as IPrintConfig
   }
 }
 

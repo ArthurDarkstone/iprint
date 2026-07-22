@@ -32,7 +32,17 @@
   },
   "scripts": {},
   "dependencies": {
-    "@iprint/shared": "workspace:*"
+    "@iprint/shared": "workspace:*",
+    "canvg": "catalog:",
+    "html2canvas": "catalog:",
+    "jsbarcode": "catalog:",
+    "jspdf": "catalog:",
+    "qrcode": "catalog:",
+    "socket.io-client": "catalog:"
+  },
+  "devDependencies": {
+    "@types/jsbarcode": "catalog:",
+    "@types/qrcode": "catalog:"
   },
   "publishConfig": {
     "exports": {

@@ -21,6 +21,10 @@ export class PtConverter extends DpiCalculator {
   toPx(pt: number): number {
     return pt * (this.getDpi() / 72)
   }
+
+  toMm(pt: number): number {
+    return pt * (25.4 / 72)
+  }
 }
 
 export class PxConverter extends DpiCalculator {
@@ -42,3 +46,11 @@ export class MmConverter {
 export const pt: PtConverter = new PtConverter()
 export const px: PxConverter = new PxConverter()
 export const mm: MmConverter = new MmConverter()
+
+export function pxToPt(pxVal: number): number {
+  return px.toPt(pxVal)
+}
+
+export function ptToPx(ptVal: number): number {
+  return pt.toPx(ptVal)
+}

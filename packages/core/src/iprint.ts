@@ -1,16 +1,21 @@
-import type { IPrintInitOptions } from './types'
+import type { IPrintInitOptions, PrintData } from './types'
 import { config } from './config'
+import { printElementOptionItemManager } from './managers/PrintElementOptionItemManager'
 import { printElementTypeManager } from './managers/PrintElementTypeManager'
+import { createDefaultOptionItemFactories } from './optionItems/catalog'
+import { defaultProvider } from './provider/defaultProvider'
+import { injectCSS } from './styles'
 import { PrintTemplate } from './template/PrintTemplate'
+import { dom } from './utils/dom'
 
 /**
- * Main iprint object
+ * Main iprint object. Mirrors hiprint's top-level API.
  */
 export class IPrint {
   private static instance: IPrint
   private providers: any[] = []
 
-  private constructor() { }
+  private constructor() {}
 
   static getInstance(): IPrint {
     if (!IPrint.instance) {
@@ -19,55 +24,63 @@ export class IPrint {
     return IPrint.instance
   }
 
-  /**
-   * Initialize iprint
-   */
   init(options?: IPrintInitOptions): void {
-    config.init()
+    config.init({
+      movingDistance: options?.movingDistance,
+      paperHeightTrim: options?.paperHeightTrim,
+    })
+    injectCSS()
 
-    if (options?.providers) {
-      this.providers = options.providers
-      this.providers.forEach((provider) => {
-        if (provider.addElementTypes) {
-          provider.addElementTypes(printElementTypeManager)
-        }
-      })
-    }
+    const providers = options?.providers && options.providers.length > 0
+      ? options.providers
+      : [defaultProvider]
+    this.providers = providers
+    this.providers.forEach((provider) => {
+      if (provider.addElementTypes)
+        provider.addElementTypes(printElementTypeManager)
+    })
+
+    if (options?.optionItems)
+      printElementOptionItemManager.registerItems(options.optionItems)
+    else
+      printElementOptionItemManager.registerItems(createDefaultOptionItemFactories() as any)
   }
 
-  /**
-   * Get PrintTemplate class
-   */
   get PrintTemplate(): typeof PrintTemplate {
     return PrintTemplate
   }
 
-  /**
-   * Get PrintElementTypeManager
-   */
   get PrintElementTypeManager(): typeof printElementTypeManager {
     return printElementTypeManager
   }
 
-  /**
-   * Print function
-   */
-  print(template: PrintTemplate, data?: any): void {
-    template.print(data)
+  print(template: PrintTemplate, data?: PrintData, options?: any): void {
+    template.print(data, options)
   }
 
-  /**
-   * Get HTML function
-   */
-  getHtml(template: PrintTemplate, data?: any): string {
-    return template.getHtml(data).html()
+  print2(template: PrintTemplate, data?: PrintData, onSuccess?: Function, onError?: Function, options?: any): void {
+    template.print2(data, options).then(() => onSuccess?.()).catch((e) => {
+      console.error(e)
+      onError?.(e)
+    })
+  }
+
+  getHtml(template: PrintTemplate, data?: PrintData, options?: any): string {
+    return (template.getHtml(data, options) as any).els?.[0]?.outerHTML || ''
+  }
+
+  getHtmlByTemplates(templates: Array<{ template: PrintTemplate, data?: PrintData, options?: any }>): string {
+    const result = dom('<div class="hiprint-printTemplate"></div>')
+    templates.forEach(({ template, data, options }) => {
+      const html = template.getHtml(data, options)
+      ;(html as any).els?.forEach((el: Node) => result.els[0].appendChild(el))
+    })
+    return result.els[0]?.outerHTML || ''
   }
 }
 
-// Create global instance
 const iprint: IPrint = IPrint.getInstance()
 
-// Export the main functions
 export function init(options?: IPrintInitOptions): void {
   iprint.init(options)
 }
@@ -75,27 +88,20 @@ export function init(options?: IPrintInitOptions): void {
 export { PrintTemplate }
 export const PrintElementTypeManager: typeof printElementTypeManager = printElementTypeManager
 
-export function print(template: PrintTemplate, data?: any): void {
-  iprint.print(template, data)
+export function print(template: PrintTemplate, data?: PrintData, options?: any): void {
+  iprint.print(template, data, options)
 }
 
-export function print2(template: PrintTemplate, data?: any, onSuccess?: Function, onError?: Function): void {
-  try {
-    iprint.print(template, data)
-    onSuccess?.()
-  }
-  catch (error) {
-    onError?.(error)
-  }
+export function print2(template: PrintTemplate, data?: PrintData, onSuccess?: Function, onError?: Function, options?: any): void {
+  iprint.print2(template, data, onSuccess, onError, options)
 }
 
-export function getHtml(template: PrintTemplate, data?: any): string {
-  return iprint.getHtml(template, data)
+export function getHtml(template: PrintTemplate, data?: PrintData, options?: any): string {
+  return iprint.getHtml(template, data, options)
 }
 
-// Make iprint available globally
 if (typeof window !== 'undefined') {
-  (window as any).iprint = {
+  ;(window as any).iprint = {
     init,
     PrintTemplate,
     PrintElementTypeManager,
