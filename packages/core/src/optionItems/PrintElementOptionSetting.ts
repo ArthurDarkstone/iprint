@@ -1,7 +1,7 @@
 import type { PrintTemplate } from '../template/PrintTemplate'
 import type { Dom } from '../utils/dom'
 import { printElementOptionItemManager } from '../managers/PrintElementOptionItemManager'
-import { dom } from '../utils/dom'
+import { dom, isDom } from '../utils/dom'
 import { event } from '../utils/event'
 
 const PANEL_FIELDS = [
@@ -29,7 +29,7 @@ export class PrintElementOptionSetting {
 
   constructor(template: PrintTemplate, container: string | HTMLElement | Dom) {
     this.template = template
-    this.container = container instanceof Dom ? container : dom(container as any)
+    this.container = isDom(container) ? container : dom(container as any)
     event.on(`PrintElementSelectEventKey_${template.id}`, (payload: any) => {
       this.showElement(payload?.printElement)
     })

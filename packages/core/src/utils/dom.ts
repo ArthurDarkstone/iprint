@@ -382,9 +382,13 @@ export class Dom {
   }
 }
 
+export function isDom(x: any): x is Dom {
+  return !!x && x instanceof Dom
+}
+
 export function dom(selector: Selector | Dom): Dom {
-  if (selector instanceof Dom)
-    return selector
+  if (isDom(selector))
+    return selector as Dom
   if (!selector)
     return new Dom([])
   if (selector instanceof HTMLElement)

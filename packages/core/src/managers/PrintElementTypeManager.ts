@@ -4,7 +4,7 @@ import type { Dom } from '../utils/dom'
 import { makeDraggable } from '../drag/draggable'
 import { createPrintElementType } from '../elements/PrintElementType'
 import { PrintElementTypeGroup } from '../elements/PrintElementTypeGroup'
-import { dom } from '../utils/dom'
+import { dom, isDom } from '../utils/dom'
 import { hiPrintlib } from '../utils/hiprintlib'
 
 export type EnableDragFn = (items: Dom, getElementType: (tid: string) => PrintElementType | undefined, onDrop: (el: PrintElementType, left: number, top: number) => void) => void
@@ -68,8 +68,8 @@ export class PrintElementTypeManager {
     this.buildByHtml(host.find('.ep-draggable-item'))
   }
 
-  buildByHtml(items: Dom | string, onDrop?: (el: PrintElementType, left: number, top: number) => void): void {
-    const $items = items instanceof Dom ? items : dom(items)
+  buildByHtml(items: Dom | string | NodeListOf<Element>, onDrop?: (el: PrintElementType, left: number, top: number) => void): void {
+    const $items = isDom(items) ? items : dom(items as any)
     this.enableDrag($items, onDrop)
   }
 

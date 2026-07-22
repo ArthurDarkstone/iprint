@@ -2,7 +2,7 @@ import type { GetHtmlOptions, PrintData, PrintPanelEntity, PrintTemplateEntity }
 import type { Dom } from '../utils/dom'
 import { getPaperSize } from '../config'
 import { PrintElementTypeManager } from '../managers/PrintElementTypeManager'
-import { dom } from '../utils/dom'
+import { dom, isDom } from '../utils/dom'
 import { event } from '../utils/event'
 import { guid } from '../utils/guid'
 import { PrintPanel } from './PrintPanel'
@@ -70,7 +70,7 @@ export class PrintTemplate {
   }
 
   design(container: string | HTMLElement | Dom, options?: any): void {
-    this.container = container instanceof Dom ? container : dom(container as any)
+    this.container = isDom(container) ? container : dom(container as any)
     this.container.empty()
     this.printPanels.forEach((panel) => {
       panel.design(options)
@@ -228,7 +228,7 @@ export class PrintTemplate {
   }
 
   printByHtml(html: Dom | string): void {
-    browserPrint(html instanceof Dom ? html : dom(html as any))
+    browserPrint(isDom(html) ? html : dom(html as any))
   }
 
   async print2(_data?: PrintData, _options?: GetHtmlOptions): Promise<void> {
@@ -238,7 +238,7 @@ export class PrintTemplate {
 
   async printByHtml2(_html: Dom | string, _options?: GetHtmlOptions): Promise<void> {
     const { printByHtml2 } = await import('../print/webSocket')
-    return printByHtml2(this, _html instanceof Dom ? _html : dom(_html as any), _options)
+    return printByHtml2(this, isDom(_html) ? _html : dom(_html as any), _options)
   }
 
   async toPdf(data: PrintData, filename: string, options?: any): Promise<void> {
